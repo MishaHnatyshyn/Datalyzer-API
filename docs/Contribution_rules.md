@@ -1,4 +1,4 @@
-## Commit message
+## Branch name
 - For feature: *feature/description*
 
 - For bug fix: *fix/description*
