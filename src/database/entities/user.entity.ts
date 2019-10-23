@@ -8,7 +8,7 @@ import {
   JoinColumn,
   BaseEntity,
 } from 'typeorm';
-import { UserType  } from './userType.entity';
+import UserType from './userType.entity';
 
 @Entity()
 export default class User extends BaseEntity {
@@ -21,6 +21,9 @@ export default class User extends BaseEntity {
 
   @Column({ length: 500, nullable: false })
   password: string;
+
+  @Column()
+  user_type_id: number;
 
   @OneToOne(type => User)
   @JoinColumn({name: 'created_by_id'})
