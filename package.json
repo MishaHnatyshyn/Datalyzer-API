@@ -24,6 +24,7 @@
     "@nestjs/core": "^6.7.2",
     "@nestjs/platform-express": "^6.7.2",
     "@nestjs/platform-fastify": "^6.8.2",
+    "class-validator": "^0.10.2",
     "dotenv": "^8.2.0",
     "pg": "^7.12.1",
     "reflect-metadata": "^0.1.13",

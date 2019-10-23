@@ -1,8 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+  BaseEntity,
+} from 'typeorm';
 import { UserType  } from './userType.entity';
 
 @Entity()
-export class User {
+export default class User extends BaseEntity {
+
   @PrimaryGeneratedColumn()
   id: number;
 

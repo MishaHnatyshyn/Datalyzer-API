@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { User } from './user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from 'typeorm';
+import User from './user.entity';
+
 @Entity()
-export class UserType {
+export default class UserType extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
