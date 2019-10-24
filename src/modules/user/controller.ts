@@ -17,4 +17,9 @@ export class UsersController {
   async findAll() {
     return await this.usersService.findAll();
   }
+
+  @Get('/admins')
+  async getAdmins() {
+    return await this.usersService.getAdmins();
+  }
 }

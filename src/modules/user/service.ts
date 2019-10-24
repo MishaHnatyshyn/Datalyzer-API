@@ -12,12 +12,14 @@ export class UsersService extends BaseService<User> {
   ) {
     super(userRepository);
   }
+
   async create(user: CreateUserDto): Promise<User> {
     const newUser = new User();
     newUser.name = user.name;
     newUser.password = user.password;
     newUser.user_type_id = user.user_type_id;
-    return await newUser.save();
+
+    return this.userRepository.create(newUser);
   }
 
   getByUsersName(name: string): Promise<User[]> {
@@ -28,6 +30,9 @@ export class UsersService extends BaseService<User> {
   }
 
   getAdmins() {
-    // return this.userRepository.createQueryBuilder('users')
+    return this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.user_type', 'user_type', 'user_type.name = :type', {type: 'admin'} )
+      .getMany();
   }
 }

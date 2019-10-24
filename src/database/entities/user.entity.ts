@@ -25,6 +25,9 @@ export default class User extends BaseEntity {
   @Column()
   user_type_id: number;
 
+  @Column()
+  created_by_id: number;
+
   @OneToOne(type => User)
   @JoinColumn({name: 'created_by_id'})
   created_by: User;

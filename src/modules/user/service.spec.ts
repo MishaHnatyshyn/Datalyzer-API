@@ -1,40 +1,71 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from '../../app.controller';
-import { AppService } from '../../app.service';
-import User from '../../database/entities/user.entity';
-import { DatabaseModule } from '../../database/database.module';
+import { Test } from '@nestjs/testing';
 import { UsersService } from './service';
-import CreateDto from './dto/create.dto';
-import { UsersController } from './controller';
-import userProviders from './providers';
+import { BaseEntity } from 'typeorm';
+import User from '../../database/entities/user.entity';
 
-describe('AppController', () => {
-  let userController: UsersController;
+interface Params {
+  where: object;
+}
+
+const userMock = new User();
+userMock.id = 1;
+userMock.name = 'misha';
+userMock.password = '123321';
+userMock.user_type_id = 1;
+userMock.created_by_id = 0;
+
+const inject = (entityMock) => (taraget: any) => {
+  class NewConstructor {
+    constructor() {
+      return new taraget(entityMock);
+    }
+  }
+
+  return NewConstructor as any;
+};
+
+@inject(userMock)
+// tslint:disable-next-line:max-classes-per-file
+class RepositoryApi {
+  constructor(public entityMock?: BaseEntity) {}
+
+  find(params: BaseEntity): Promise<BaseEntity[]> {
+    return Promise.resolve([this.entityMock]);
+  }
+
+  create(entity: BaseEntity): Promise<BaseEntity> {
+    return Promise.resolve(userMock);
+  }
+}
+
+describe('User Service', () => {
   let userService: UsersService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [DatabaseModule],
-      controllers: [UsersController],
       providers: [
-        ...userProviders,
+        {
+          provide: 'USER_REPOSITORY',
+          useClass: RepositoryApi,
+        },
         UsersService,
       ],
     }).compile();
 
     userService = module.get<UsersService>(UsersService);
-    userController = module.get<UsersController>(UsersController);
   });
 
   it('should be defined', () => {
     expect(userService).toBeDefined();
   });
 
-  it('should create user record"', async () => {
-    const mock = new CreateDto();
-    mock.name = 'Misha';
-    mock.password = '123321';
-    // mock.user_type_id = 1;
-    await userService.create(mock);
+  it('should return user by name', async () => {
+    const userResult = await userService.getByUsersName('misha');
+    expect(userResult).toContain(userMock);
+  });
+
+  it('should create user', async () => {
+    const createdUser = await userService.create(userMock);
+    expect(createdUser).toBe(userMock);
   });
 });
