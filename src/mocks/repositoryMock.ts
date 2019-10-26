@@ -1,27 +1,35 @@
 import { BaseEntity } from 'typeorm';
 
-export default (entitiesMock) => (
-  class RepositoryApi {
+export default (entitiesMock) => {
+  return class RepositoryApiMock {
     public entitiesMock: BaseEntity[] = entitiesMock;
 
-    find(params: BaseEntity): Promise<BaseEntity[]> {
+    public find = jest.fn((params: BaseEntity): Promise<BaseEntity[]> => {
       return Promise.resolve(this.entitiesMock);
-    }
+    });
 
-    create(entity: BaseEntity): Promise<BaseEntity> {
-      return Promise.resolve(this.entitiesMock[0]);
-    }
+    public create = jest.fn((entity: BaseEntity): BaseEntity => {
+      return this.entitiesMock[0];
+    });
 
-    createQueryBuilder(alias: string): any {
+    public createQueryBuilder = jest.fn((alias: string): any => {
       return this;
-    }
+    });
 
-    innerJoin(property: string, alias: string, condition: string, parameters: object): any {
+    public innerJoin = jest.fn((
+      property: string,
+      alias: string,
+      condition: string,
+      parameters: object ): any => {
       return this;
-    }
+    });
 
-    getMany(): BaseEntity[] {
+    public getMany = jest.fn((): BaseEntity[] => {
       return entitiesMock;
-    }
-  }
-);
+    });
+
+    public findOne = jest.fn((id: number): Promise<BaseEntity> => {
+      return Promise.resolve(this.entitiesMock[0]);
+    });
+  };
+};

@@ -9,14 +9,6 @@ export default class BaseService<Entity extends BaseEntity> {
     return await this.repository.findOne(id);
   }
 
-  async findOneByQuery(query): Promise<Entity> {
-    return this.repository.findOne({where: query});
-  }
-
-  async findAllByQuery(query): Promise<Entity[]> {
-    return this.repository.find({where: query});
-  }
-
   async findAll(): Promise<Entity[]> {
     return await this.repository.find();
   }

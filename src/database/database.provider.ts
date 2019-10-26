@@ -1,10 +1,11 @@
 import { createConnection } from 'typeorm';
 import * as dotenv from 'dotenv';
+import { DB_CONNECTION } from '../constants/providerNames';
 dotenv.config({ path: `${__dirname}/../../.env` });
 const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 export const databaseProvider = {
-  provide: 'DATABASE_CONNECTION',
+  provide: DB_CONNECTION,
   useFactory: async () => await createConnection({
     type: 'postgres',
     host: DB_HOST,

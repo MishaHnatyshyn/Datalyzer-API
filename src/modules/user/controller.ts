@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { UsersService } from './service';
 import CreateDto from './dto/create.dto';
 
@@ -20,6 +20,6 @@ export class UsersController {
 
   @Get('/admins')
   async getAdmins() {
-    return await this.usersService.getAdmins();
+    return await this.usersService.getUsersByType('admin');
   }
 }
