@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import User from '../../database/entities/user.entity';
-import BaseService from '../../base/base.service';
+import User from '../database/entities/user.entity';
+import BaseRepositoryService from '../../base/baseRepositoryService';
 import CreateUserDto from './dto/create.dto';
-import { USER_REPOSITORY } from '../../constants/providerNames';
+import { USER_REPOSITORY } from '../../constants';
 
 @Injectable()
-export class UsersService extends BaseService<User> {
+export class UsersService extends BaseRepositoryService<User> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: Repository<User>,
