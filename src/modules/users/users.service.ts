@@ -16,16 +16,16 @@ export class UsersService extends BaseRepositoryService<User> {
 
   async create(user: CreateUserDto): Promise<User> {
     const newUser = new User();
-    newUser.name = user.name;
+    newUser.username = user.username;
     newUser.password = user.password;
     newUser.user_type_id = user.user_type_id;
 
     return this.userRepository.create(newUser);
   }
 
-  getByUsersName(name: string): Promise<User[]> {
-    return this.userRepository.find({
-      where: {name},
+  getByUserName(username: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {username},
       relations: ['user_type'],
     });
   }
@@ -34,7 +34,7 @@ export class UsersService extends BaseRepositoryService<User> {
     return this.userRepository
       .createQueryBuilder('user')
       .innerJoin(
-        'user.user_type',
+        'users.user_type',
         'user_type',
         'user_type.name = :type',
         {type} )

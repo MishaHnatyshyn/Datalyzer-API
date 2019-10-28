@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
-import { UsersService } from './service';
-import getRepositoryMock from '../../mocks/repositoryMock';
-import usersMock from '../../mocks/usersMock';
+import { UsersService } from '../users.service';
+import getRepositoryMock from '../../../mocks/repositoryMock';
+import usersMock from '../../../mocks/usersMock';
 
 const repositoryMock = getRepositoryMock(usersMock);
 
-describe('User Service', () => {
+describe('User AuthService', () => {
   let userService: UsersService;
 
   beforeEach(async () => {
@@ -26,12 +26,12 @@ describe('User Service', () => {
     expect(userService).toBeDefined();
   });
 
-  it('should return user by name', async () => {
+  it('should return users by name', async () => {
     const userResult = await userService.getByUsersName('name');
     expect(userResult).toBe(usersMock);
   });
 
-  it('should create user', async () => {
+  it('should create users', async () => {
     const createdUser = await userService.create(usersMock[0]);
     expect(createdUser).toBe(usersMock[0]);
   });

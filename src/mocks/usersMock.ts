@@ -26,7 +26,7 @@ const usersMockData = [
 
 const userMock = new User();
 userMock.id = 1;
-userMock.name = 'misha';
+userMock.username = 'misha';
 userMock.password = '123321';
 userMock.user_type_id = 1;
 userMock.created_by_id = 0;
