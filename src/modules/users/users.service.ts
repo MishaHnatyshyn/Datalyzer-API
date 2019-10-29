@@ -23,6 +23,10 @@ export class UsersService extends BaseRepositoryService<User> {
     return this.userRepository.create(newUser);
   }
 
+  findAll(): Promise<User[]> {
+    return super.findAll({relations: ['user_type']});
+  }
+
   getByUserName(username: string): Promise<User> {
     return this.userRepository.findOne({
       where: {username},
@@ -39,5 +43,12 @@ export class UsersService extends BaseRepositoryService<User> {
         'user_type.name = :type',
         {type} )
       .getMany();
+  }
+
+  getUserWithLoginCredits(username: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {username},
+      select: ['id', 'username', 'password'],
+    });
   }
 }

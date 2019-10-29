@@ -1,15 +1,17 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { AuthModule } from '../auth.module';
-import { AuthService } from '../auth.service';
 import { INestApplication } from '@nestjs/common';
+import { AppModule } from '../../../app.module';
+
+jest.setTimeout(30000);
 
 describe('Auth e2e ', () => {
   let app: INestApplication;
+  let token = '';
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      imports: [AuthModule],
+      imports: [AppModule],
     })
       .compile();
 
@@ -17,13 +19,21 @@ describe('Auth e2e ', () => {
     await app.init();
   });
 
-  it(`/POST auth/login`, async () => {
+  it(`Should validate user credits and return jwt token`, async () => {
     return request(app.getHttpServer())
       .post('/auth/login')
-      .send({username: 'misha', id: 1})
-      .expect(200).then((res) => {
-        expect(res.body.access_token).toBeDefined();
+      .send({username: 'test', password: 'test'})
+      .expect(201).then((res) => {
+        token = res.body.access_token;
+        expect(token).toBeDefined();
       });
+  });
+
+  it('Should validate jwt token and return users', async () => {
+    return request(app.getHttpServer())
+      .get('/users')
+      .set({Authorization: 'Bearer ' + token})
+      .expect(200);
   });
 
   afterAll(async () => {

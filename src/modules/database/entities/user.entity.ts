@@ -11,7 +11,7 @@ import {
 import UserType from './userType.entity';
 
 @Entity()
-export default class User extends BaseEntity {
+export default class Users extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,18 +19,18 @@ export default class User extends BaseEntity {
   @Column({ length: 500, nullable: false, unique: true})
   username: string;
 
-  @Column({ length: 500, nullable: false })
-  password: string;
+  @Column({ length: 500, nullable: false, select: false })
+  password?: string;
 
   @Column()
   user_type_id: number;
 
-  @Column()
+  @Column({nullable: true})
   created_by_id: number;
 
-  @OneToOne(type => User)
+  @OneToOne(type => Users)
   @JoinColumn({name: 'created_by_id'})
-  created_by: User;
+  created_by: Users;
 
   @OneToOne(type => UserType)
   @JoinColumn({name: 'user_type_id'})

@@ -5,11 +5,15 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
     public repository: Repository<Entity>,
   ) {}
 
-  findById(id: number): Promise<Entity> {
-    return this.repository.findOne(id);
+  findById(id: number, options?: object): Promise<Entity> {
+    return this.repository.findOne(id, options);
   }
 
-  findAll(): Promise<Entity[]> {
-    return this.repository.find();
+  findAll(options?: object): Promise<Entity[]> {
+    return this.repository.find(options);
+  }
+
+  findOne(options: object): Promise<Entity> {
+   return this.repository.findOne(options);
   }
 }
