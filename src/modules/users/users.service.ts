@@ -6,6 +6,7 @@ import CreateUserDto from './dto/create.dto';
 import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
 import {BcryptService} from "../../base/bcrypt.service";
 import UserType from "../database/entities/userType.entity";
+import {UserListDto} from "./dto/userList.dto";
 
 @Injectable()
 export class UsersService extends BaseRepositoryService<User> {
@@ -54,6 +55,16 @@ export class UsersService extends BaseRepositoryService<User> {
       where: {username},
       relations: ['user_type'],
     });
+  }
+
+  getUserList(page: number, itemsPerPage: number, admin: number): Promise<User[]> {
+    const skip = (page - 1) * itemsPerPage;
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where('user.created_by_id = :admin', {admin})
+      .skip(skip)
+      .take(itemsPerPage)
+      .getMany();
   }
 
   getUsersByType(type: string): Promise<User[]> {

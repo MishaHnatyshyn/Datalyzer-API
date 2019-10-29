@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
+import {UserListDto} from "./dto/userList.dto";
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
@@ -17,8 +18,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard('admin'))
   @Get()
-  async findAll() {
-    return await this.usersService.findAll();
+  async findAll(body: UserListDto, @Request() req) {
+    return await this.usersService.getUserList(body.page, body.itemsPerPage, req.user.userId);
   }
 
   @UseGuards(AuthGuard('admin'))
