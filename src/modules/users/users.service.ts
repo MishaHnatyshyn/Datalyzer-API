@@ -36,13 +36,25 @@ export class UsersService extends BaseRepositoryService<User> {
 
   getUsersByType(type: string): Promise<User[]> {
     return this.userRepository
-      .createQueryBuilder('user')
+      .createQueryBuilder('users')
       .innerJoin(
         'users.user_type',
         'user_type',
         'user_type.name = :type',
         {type} )
       .getMany();
+  }
+
+  getUserByType(whereOptions: object, type: string): Promise<User> {
+    return this.userRepository
+      .createQueryBuilder('users')
+      .where(whereOptions)
+      .innerJoin(
+        'users.user_type',
+        'user_type',
+        'user_type.name = :type',
+        {type} )
+      .getOne();
   }
 
   getUserWithLoginCredits(username: string): Promise<User> {

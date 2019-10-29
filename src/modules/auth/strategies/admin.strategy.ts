@@ -1,11 +1,11 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../../users/users.service';
-import { JwtDto } from '../dto/jwt.dto';
+import { UserJwtDto } from '../dto/user.jwt.dto';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
   constructor(
     private readonly userService: UsersService,
   ) {
@@ -16,7 +16,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate({ username, id }: JwtDto) {
-    return this.userService.findOne({where: {username, id}});
+  validate({ username, id, user_type: { name } }: UserJwtDto) {
+    if (name !== 'admin') {
+      throw new UnauthorizedException();
+    }
+    return this.userService.getUserByType( {username, id}, name);
   }
 }

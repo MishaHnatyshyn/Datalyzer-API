@@ -4,7 +4,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { AdminStrategy } from './strategies/admin.strategy';
+import { UserStrategy } from './strategies/user.strategy';
 import { AuthController } from './auth.controller';
 import { BcryptService } from '../../base/bcrypt.service';
 
@@ -18,6 +19,12 @@ import { BcryptService } from '../../base/bcrypt.service';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, BcryptService],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    UserStrategy,
+    AdminStrategy,
+    BcryptService,
+  ],
 })
 export class AuthModule {}

@@ -14,12 +14,13 @@ export class UsersController {
     return this.usersService.create(createDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('admin'))
   @Get()
   async findAll() {
     return await this.usersService.findAll();
   }
 
+  @UseGuards(AuthGuard('admin'))
   @Get('/admins')
   async getAdmins() {
     return await this.usersService.getUsersByType('admin');
