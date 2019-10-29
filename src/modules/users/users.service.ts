@@ -46,9 +46,11 @@ export class UsersService extends BaseRepositoryService<User> {
   }
 
   getUserWithLoginCredits(username: string): Promise<User> {
-    return this.userRepository.findOne({
-      where: {username},
-      select: ['id', 'username', 'password'],
-    });
+    return this.userRepository
+      .createQueryBuilder('users')
+      .addSelect('users.password')
+      .innerJoinAndSelect('users.user_type', 'user_type')
+      .where({username})
+      .getOne();
   }
 }

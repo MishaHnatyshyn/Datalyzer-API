@@ -21,9 +21,10 @@ export class AuthService {
     return isPassCorrect ? user : null;
   }
 
-  async login(user: User) {
+  async login({ password, ...user }: User) {
     const payload = { username: user.username, id: user.id };
     return {
+      ...user,
       access_token: this.jwtService.sign(payload),
     };
   }
