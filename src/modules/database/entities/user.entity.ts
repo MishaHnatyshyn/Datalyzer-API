@@ -4,9 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
   JoinColumn,
   BaseEntity,
+  ManyToOne
 } from 'typeorm';
 import UserType from './userType.entity';
 
@@ -22,17 +22,20 @@ export default class Users extends BaseEntity {
   @Column({ length: 500, nullable: false, select: false })
   password?: string;
 
+  @Column({ length: 500, nullable: true})
+  description: string;
+
   @Column()
   user_type_id: number;
 
-  @Column({nullable: true})
+  @Column({nullable: true, unique: false})
   created_by_id: number;
 
-  @OneToOne(type => Users)
+  @ManyToOne(type => Users)
   @JoinColumn({name: 'created_by_id'})
   created_by: Users;
 
-  @OneToOne(type => UserType)
+  @ManyToOne(type => UserType)
   @JoinColumn({name: 'user_type_id'})
   user_type: UserType;
 
