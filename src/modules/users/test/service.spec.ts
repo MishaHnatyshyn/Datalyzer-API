@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { UsersService } from '../users.service';
 import getRepositoryMock from '../../../mocks/repositoryMock';
 import usersMock from '../../../mocks/usersMock';
+import { USER_REPOSITORY } from '../../../constants';
 
 const repositoryMock = getRepositoryMock(usersMock);
 
@@ -12,7 +13,7 @@ describe('User AuthService', () => {
     const module = await Test.createTestingModule({
       providers: [
         {
-          provide: 'USER_REPOSITORY',
+          provide: USER_REPOSITORY,
           useClass: repositoryMock,
         },
         UsersService,
@@ -27,8 +28,8 @@ describe('User AuthService', () => {
   });
 
   it('should return users by name', async () => {
-    const userResult = await userService.getByUsersName('name');
-    expect(userResult).toBe(usersMock);
+    const userResult = await userService.getByUserName('name');
+    expect(userResult).toBe(usersMock[0]);
   });
 
   it('should create users', async () => {
