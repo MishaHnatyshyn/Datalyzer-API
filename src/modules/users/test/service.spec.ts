@@ -1,18 +1,19 @@
 import { Test } from '@nestjs/testing';
-import { UsersService } from './service';
-import getRepositoryMock from '../../mocks/repositoryMock';
-import usersMock from '../../mocks/usersMock';
+import { UsersService } from '../users.service';
+import getRepositoryMock from '../../../mocks/repositoryMock';
+import usersMock from '../../../mocks/usersMock';
+import { USER_REPOSITORY } from '../../../constants';
 
 const repositoryMock = getRepositoryMock(usersMock);
 
-describe('User Service', () => {
+describe('User AuthService', () => {
   let userService: UsersService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
         {
-          provide: 'USER_REPOSITORY',
+          provide: USER_REPOSITORY,
           useClass: repositoryMock,
         },
         UsersService,
@@ -26,12 +27,12 @@ describe('User Service', () => {
     expect(userService).toBeDefined();
   });
 
-  it('should return user by name', async () => {
-    const userResult = await userService.getByUsersName('name');
-    expect(userResult).toBe(usersMock);
+  it('should return users by name', async () => {
+    const userResult = await userService.getByUserName('name');
+    expect(userResult).toBe(usersMock[0]);
   });
 
-  it('should create user', async () => {
+  it('should create users', async () => {
     const createdUser = await userService.create(usersMock[0]);
     expect(createdUser).toBe(usersMock[0]);
   });
