@@ -41,8 +41,6 @@ export class UsersService extends BaseRepositoryService<User> {
     newUser.description = user.description || '';
     newUser.password = await this.bcryptService.hashPassword(user.password);
     newUser.user_type_id = user.user_type_id;
-    newUser.created_at = new Date().toISOString();
-    newUser.updated_at = new Date().toISOString();
     newUser.created_by_id = adminId;
     return this.userRepository.save(newUser);
   }
