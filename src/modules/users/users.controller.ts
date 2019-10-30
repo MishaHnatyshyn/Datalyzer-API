@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import {Controller, Get, Post, Body, Request, UseGuards, Param, Query} from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
 import {UserListDto} from "./dto/userList.dto";
@@ -18,8 +18,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard('admin'))
   @Get()
-  async findAll(body: UserListDto, @Request() req) {
-    return await this.usersService.getUserList(body.page, body.itemsPerPage, req.user.userId);
+  async findAll(@Query() userListDto: UserListDto, @Request() req) {
+    return await this.usersService.getUserList(userListDto.page, userListDto.itemsPerPage, req.user.id);
   }
 
   @UseGuards(AuthGuard('admin'))

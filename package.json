@@ -28,6 +28,7 @@
     "@nestjs/platform-fastify": "^6.8.2",
     "@nestjs/typeorm": "^6.2.0",
     "bcrypt": "^3.0.6",
+    "class-transformer": "^0.2.3",
     "class-validator": "^0.10.2",
     "dotenv": "^8.2.0",
     "passport": "^0.4.0",
