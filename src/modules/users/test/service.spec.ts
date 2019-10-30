@@ -2,9 +2,13 @@ import { Test } from '@nestjs/testing';
 import { UsersService } from '../users.service';
 import getRepositoryMock from '../../../mocks/repositoryMock';
 import usersMock from '../../../mocks/usersMock';
-import { USER_REPOSITORY } from '../../../constants';
+import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../../constants';
+import userTypesMock from "../../../mocks/userTypeMock";
+import {BcryptService} from "../../../base/bcrypt.service";
+import CreateUserDto from "../dto/create.dto";
 
-const repositoryMock = getRepositoryMock(usersMock);
+const userRepositoryMock = getRepositoryMock(usersMock);
+const userTypeRepositoryMock = getRepositoryMock(userTypesMock);
 
 describe('User AuthService', () => {
   let userService: UsersService;
@@ -14,8 +18,13 @@ describe('User AuthService', () => {
       providers: [
         {
           provide: USER_REPOSITORY,
-          useClass: repositoryMock,
+          useClass: userRepositoryMock,
         },
+        {
+          provide: USER_TYPE_REPOSITORY,
+          useClass: userTypeRepositoryMock,
+        },
+        BcryptService,
         UsersService,
       ],
     }).compile();
@@ -33,8 +42,15 @@ describe('User AuthService', () => {
   });
 
   it('should create users', async () => {
-    const createdUser = await userService.create(usersMock[0]);
-    expect(createdUser).toBe(usersMock[0]);
+    const newUserData: CreateUserDto = {
+        username: 'new user',
+        password: '123321',
+        user_type_id: 2,
+        description: 'bla bla'
+    }
+    userService.getByUserName = jest.fn().mockReturnValue(null)
+    const createdUser = await userService.create(newUserData, 1);
+    expect(createdUser.username).toBe(newUserData.username);
   });
 
   it('should get only admins', async () => {

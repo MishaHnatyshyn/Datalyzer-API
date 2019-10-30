@@ -12,6 +12,11 @@ export default (entitiesMock) => {
       return this.entitiesMock[0];
     });
 
+    public save = jest.fn((entity: BaseEntity): BaseEntity => {
+      return entity;
+    });
+
+
     public createQueryBuilder = jest.fn((alias: string): any => {
       return this;
     });

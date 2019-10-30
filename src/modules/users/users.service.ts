@@ -1,26 +1,48 @@
-import { Injectable, Inject } from '@nestjs/common';
+import {Injectable, Inject, HttpException, HttpStatus} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import User from '../database/entities/user.entity';
 import BaseRepositoryService from '../../base/baseRepositoryService';
 import CreateUserDto from './dto/create.dto';
-import { USER_REPOSITORY } from '../../constants';
+import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
+import {BcryptService} from "../../base/bcrypt.service";
+import UserType from "../database/entities/userType.entity";
 
 @Injectable()
 export class UsersService extends BaseRepositoryService<User> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: Repository<User>,
+    @Inject(USER_TYPE_REPOSITORY)
+    private readonly userTypeRepository: Repository<UserType>,
+    private readonly bcryptService: BcryptService
   ) {
     super(userRepository);
   }
 
-  async create(user: CreateUserDto): Promise<User> {
+  async create(user: CreateUserDto, adminId: number): Promise<User> {
     const newUser = new User();
-    newUser.username = user.username;
-    newUser.password = user.password;
-    newUser.user_type_id = user.user_type_id;
+    const isUsernameNotUniq = await this.getByUserName(user.username);
+    if (isUsernameNotUniq) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'User with such username already exists.',
+      }, 400);
+    }
 
-    return this.userRepository.create(newUser);
+    const doesUserTypeExist = await this.checkIfUserTypeExists(user.user_type_id);
+    if (!doesUserTypeExist) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Wrong user type id.',
+      }, 400);
+    }
+
+    newUser.username = user.username;
+    newUser.description = user.description || '';
+    newUser.password = await this.bcryptService.hashPassword(user.password);
+    newUser.user_type_id = user.user_type_id;
+    newUser.created_by_id = adminId;
+    return this.userRepository.save(newUser);
   }
 
   findAll(): Promise<User[]> {
@@ -65,4 +87,10 @@ export class UsersService extends BaseRepositoryService<User> {
       .where({username})
       .getOne();
   }
+
+  async checkIfUserTypeExists(typeId: number): Promise<boolean> {
+    const type = await this.userTypeRepository.findOne(typeId);
+    return !!type
+  }
+
 }

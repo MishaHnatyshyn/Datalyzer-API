@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -9,9 +9,10 @@ export class UsersController {
     private usersService: UsersService,
   ) {}
 
+  @UseGuards(AuthGuard('admin'))
   @Post()
-  create(@Body() createDto: CreateDto) {
-    return this.usersService.create(createDto);
+  create(@Body() createDto: CreateDto, @Request() req) {
+    return this.usersService.create(createDto, req.user.id);
   }
 
   @UseGuards(AuthGuard('admin'))
