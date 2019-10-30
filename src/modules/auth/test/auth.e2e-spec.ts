@@ -33,6 +33,9 @@ describe('Auth e2e ', () => {
     return request(app.getHttpServer())
       .get('/users')
       .set({Authorization: 'Bearer ' + token})
+      .query({
+        page: 1, itemsPerPage: 1
+      })
       .expect(200);
   });
 
