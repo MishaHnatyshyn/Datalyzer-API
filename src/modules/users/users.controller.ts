@@ -18,8 +18,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard('admin'))
   @Get()
-  async findAll(@Query() userListDto: UserListDto, @Request() req) {
-    return await this.usersService.getUserList(userListDto.page, userListDto.itemsPerPage, req.user.id);
+  findAll(@Query() { page, itemsPerPage }: UserListDto, @Request() req) {
+    return this.usersService.getUserList(page, itemsPerPage, req.user.id);
   }
 
   @UseGuards(AuthGuard('admin'))
