@@ -22,6 +22,12 @@ export class UsersController {
     return this.usersService.getUserList(page, itemsPerPage, req.user.id);
   }
 
+  @UseGuards(AuthGuard('user'))
+  @Get('/me')
+  getUserData(@Request() req) {
+    return req.user;
+  }
+
   @UseGuards(AuthGuard('admin'))
   @Get('/admins')
   async getAdmins() {
