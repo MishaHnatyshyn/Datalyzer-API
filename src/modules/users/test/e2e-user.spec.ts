@@ -1,14 +1,14 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../../../app.module';
 
 jest.setTimeout(30000);
 
-describe('Auth e2e ', () => {
+describe('User e2e ', () => {
+  const { TEST_USER, TEST_USER_PASSWORD } = process.env;
   let app: INestApplication;
   let token = '';
-  const { TEST_USER, TEST_USER_PASSWORD } = process.env;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -17,6 +17,7 @@ describe('Auth e2e ', () => {
       .compile();
 
     app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     await app.init();
   });
 
@@ -30,13 +31,27 @@ describe('Auth e2e ', () => {
       });
   });
 
-  it('Should validate jwt token and return users', async () => {
+  it(`Should change user password`, async () => {
     return request(app.getHttpServer())
-      .get('/users')
+      .put('/users/change-password')
       .set({Authorization: 'Bearer ' + token})
-      .query({
-        page: 1, itemsPerPage: 1
-      })
+      .send({password: '123456', old_password: TEST_USER_PASSWORD})
+      .expect(200);
+  });
+
+  it(`Should return error`, async () => {
+    return request(app.getHttpServer())
+      .put('/users/change-password')
+      .set({Authorization: 'Bearer ' + token})
+      .send({password: '123456', old_password: '1488228'})
+      .expect(400);
+  });
+
+  it(`Should change user password back`, async () => {
+    return request(app.getHttpServer())
+      .put('/users/change-password')
+      .set({Authorization: 'Bearer ' + token})
+      .send({password: TEST_USER_PASSWORD, old_password: '123456'})
       .expect(200);
   });
 

@@ -1,8 +1,9 @@
-import {Controller, Get, Post, Body, Request, UseGuards, Param, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, UseGuards, Query, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
-import {UserListDto} from "./dto/userList.dto";
+import { UserListDto } from './dto/userList.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { NewPasswordDto } from './dto/newPassword.dto';
 
 @Controller('users')
 export class UsersController {
@@ -32,5 +33,11 @@ export class UsersController {
   @Get('/admins')
   async getAdmins() {
     return await this.usersService.getUsersByType('admin');
+  }
+
+  @UseGuards(AuthGuard('user'))
+  @Put('/change-password')
+  changePassword(@Body() newPasswordDto: NewPasswordDto, @Request() { user }) {
+    return this.usersService.changePassword(newPasswordDto, user.id);
   }
 }

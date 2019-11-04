@@ -4,9 +4,9 @@ import User from '../database/entities/user.entity';
 import BaseRepositoryService from '../../base/baseRepositoryService';
 import CreateUserDto from './dto/create.dto';
 import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
-import {BcryptService} from "../../base/bcrypt.service";
-import UserType from "../database/entities/userType.entity";
-import {UserListDto} from "./dto/userList.dto";
+import {BcryptService} from '../../base/bcrypt.service';
+import UserType from '../database/entities/userType.entity';
+import { NewPasswordDto } from './dto/newPassword.dto';
 
 @Injectable()
 export class UsersService extends BaseRepositoryService<User> {
@@ -15,7 +15,7 @@ export class UsersService extends BaseRepositoryService<User> {
     private readonly userRepository: Repository<User>,
     @Inject(USER_TYPE_REPOSITORY)
     private readonly userTypeRepository: Repository<UserType>,
-    private readonly bcryptService: BcryptService
+    private readonly bcryptService: BcryptService,
   ) {
     super(userRepository);
   }
@@ -99,9 +99,41 @@ export class UsersService extends BaseRepositoryService<User> {
       .getOne();
   }
 
-  async checkIfUserTypeExists(typeId: number): Promise<boolean> {
-    const type = await this.userTypeRepository.findOne(typeId);
-    return !!type
+  async getUserPassword(id: number): Promise<string | null> {
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .select('password')
+      .addSelect('users.password')
+      .where({id})
+      .getOne();
+
+    return user && user.password;
   }
 
+  async checkIfUserTypeExists(typeId: number): Promise<boolean> {
+    const type = await this.userTypeRepository.findOne(typeId);
+    return !!type;
+  }
+
+  async changePassword(
+    { password, old_password }: NewPasswordDto,
+    id: number,
+  ) {
+    const userOldPassword = await this.getUserPassword(id);
+    const isOldPasswordCorrect = (
+      await this.bcryptService.compare(old_password, userOldPassword)
+    );
+
+    if (!isOldPasswordCorrect) {
+      throw new HttpException({
+        error: 'Old password is not correct',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
+    const newPassword = await this.bcryptService.hashPassword(password);
+    return this.repository.update(
+      {id},
+      {password: newPassword},
+      );
+  }
 }
