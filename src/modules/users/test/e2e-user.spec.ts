@@ -7,6 +7,7 @@ jest.setTimeout(30000);
 
 describe('Auth e2e ', () => {
   const { TEST_USER, TEST_USER_PASSWORD } = process.env;
+  console.log(TEST_USER, TEST_USER_PASSWORD, '\n', process.env);
   let app: INestApplication;
   let token = '';
 
