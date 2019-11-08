@@ -26,6 +26,7 @@ export class ConnectionManagerService {
       this.connections.set(id, connection);
       return connection;
     } catch (e) {
+      console.log(e)
       return null;
     }
   }
@@ -34,7 +35,7 @@ export class ConnectionManagerService {
     try {
       const connection = await createConnection(connectionData as ConnectionOptions);
       if (connection && connection.isConnected) {
-        await connection.close();
+        connection.close();
         return true;
       }
       return false;

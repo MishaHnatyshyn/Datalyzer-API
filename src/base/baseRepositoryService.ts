@@ -1,4 +1,5 @@
 import { BaseEntity, Repository } from 'typeorm';
+import Connection from "../modules/database/entities/connection.entity";
 
 export default class BaseRepositoryService<Entity extends BaseEntity> {
   constructor(
@@ -15,5 +16,13 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
 
   findOne(options: object): Promise<Entity> {
    return this.repository.findOne(options);
+  }
+
+  getPaginatedList(skip: number, itemsPerPage: number, matcher?: object): Promise<Entity[]> {
+    return this.repository.find({
+      where: matcher,
+      skip,
+      take: itemsPerPage
+    })
   }
 }

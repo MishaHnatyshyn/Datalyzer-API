@@ -18,17 +18,15 @@ export class ConnectionsService {
     const connectionWithSameName = await this.connectionRepository.getByConnectionName(data.name);
     if (connectionWithSameName) {
       throw new HttpException({
-        status: HttpStatus.BAD_REQUEST,
         error: CreateConnectionErrorMessage.NAME_IS_NOT_UNIQ,
-      }, 400);
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const connectionTypeName = await this.connectionTypeRepository.getConnectionTypeName(data.typeId);
     if (!connectionTypeName) {
       throw new HttpException({
-        status: HttpStatus.BAD_REQUEST,
         error: CreateConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS,
-      }, 400);
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const isDatabaseReachable = await ConnectionManagerService.isReachable({
@@ -43,9 +41,8 @@ export class ConnectionsService {
 
     if (!isDatabaseReachable) {
       throw new HttpException({
-        status: HttpStatus.BAD_REQUEST,
         error: CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
-      }, 400);
+      }, HttpStatus.BAD_REQUEST);
     }
 
     return this.connectionRepository.create({ ...data, adminId: admin});
