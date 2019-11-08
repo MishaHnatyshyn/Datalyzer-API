@@ -27,7 +27,7 @@ export class UsersService extends BaseRepositoryService<User> {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'User with such username already exists.',
-      }, 400);
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const doesUserTypeExist = await this.checkIfUserTypeExists(user.user_type_id);
@@ -35,7 +35,7 @@ export class UsersService extends BaseRepositoryService<User> {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'Wrong user type id.',
-      }, 400);
+      }, HttpStatus.BAD_REQUEST);
     }
 
     newUser.username = user.username;
@@ -59,12 +59,7 @@ export class UsersService extends BaseRepositoryService<User> {
 
   getUserList(page: number, itemsPerPage: number, admin: number): Promise<User[]> {
     const skip = (page - 1) * itemsPerPage;
-    return this.userRepository
-      .createQueryBuilder('user')
-      .where('user.created_by_id = :admin', {admin})
-      .skip(skip)
-      .take(itemsPerPage)
-      .getMany();
+    return super.getPaginatedList(skip, itemsPerPage, { created_by_id: admin });
   }
 
   getUsersByType(type: string): Promise<User[]> {
