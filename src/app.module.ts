@@ -4,9 +4,10 @@ import { UsersModule } from './modules/users/users.module';
 
 import DatabaseModule from './modules/database';
 import { ConnectionsModule } from './modules/connections/connections.module';
+import {ModelsModule} from './modules/models/models.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, AuthModule, ConnectionsModule],
+  imports: [DatabaseModule, UsersModule, AuthModule, ConnectionsModule, ModelsModule],
 })
 
 export class AppModule {}
