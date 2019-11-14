@@ -16,10 +16,10 @@ export default class DataModelItemRelation extends BaseEntity {
   id: number;
 
   @Column({ length: 500, nullable: false})
-  first_model_item_field: string;
+  first_model_item_relation_field: string;
 
   @Column({ length: 500, nullable: false})
-  second_model_item_field: string;
+  second_model_item_relation_field: string;
 
   @Column({ type: 'number', nullable: false })
   first_model_item_id: number;

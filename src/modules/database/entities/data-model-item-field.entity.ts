@@ -18,7 +18,7 @@ export default class DataModelItemField extends BaseEntity {
   @Column({ length: 500, nullable: false})
   original_name: string;
 
-  @Column({ type: 'enum', nullable: false})
+  @Column({ nullable: false})
   type: 'dimension' | 'fact';
 
   @Column({ length: 500, nullable: false})
