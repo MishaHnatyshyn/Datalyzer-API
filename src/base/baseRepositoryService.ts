@@ -21,7 +21,7 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
     return this.repository.find({
       where: matcher,
       skip,
-      take: itemsPerPage
-    })
+      take: itemsPerPage,
+    });
   }
 }

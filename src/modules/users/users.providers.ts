@@ -1,6 +1,6 @@
 import { Connection } from 'typeorm';
 import User from '../database/entities/user.entity';
-import UserType from "../database/entities/userType.entity";
+import UserType from '../database/entities/userType.entity';
 import {DB_CONNECTION, USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
 
 export default [

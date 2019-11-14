@@ -16,7 +16,6 @@ export default (entitiesMock) => {
       return entity;
     });
 
-
     public createQueryBuilder = jest.fn((alias: string): any => {
       return this;
     });

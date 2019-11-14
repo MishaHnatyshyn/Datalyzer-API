@@ -5,10 +5,10 @@ import {
   Entity, JoinColumn,
   ManyToOne, OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
-import ConnectionType from "./connectionType.entity";
-import Users from "./user.entity";
+  UpdateDateColumn,
+} from 'typeorm';
+import ConnectionType from './connectionType.entity';
+import Users from './user.entity';
 
 @Entity()
 export default class Connection extends BaseEntity {

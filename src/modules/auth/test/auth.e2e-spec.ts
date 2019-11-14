@@ -35,7 +35,7 @@ describe('Auth e2e ', () => {
       .get('/users')
       .set({Authorization: 'Bearer ' + token})
       .query({
-        page: 1, itemsPerPage: 1
+        page: 1, itemsPerPage: 1,
       })
       .expect(200);
   });

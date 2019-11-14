@@ -7,9 +7,9 @@ import {ConnectionManagerService} from './connection-manager.service';
 import {
   CreateConnectionErrorMessage,
   FormattedTableAndColumnQueryResult,
-  TableAndColumnQueryResult
-} from "./connections.interfaces";
-import {dataBaseSelectTablesAndColumnsQuery, formatTablesAndColumnsResponse} from "./utils";
+  TableAndColumnQueryResult,
+} from './connections.interfaces';
+import {dataBaseSelectTablesAndColumnsQuery, formatTablesAndColumnsResponse} from './utils';
 
 @Injectable()
 export class ConnectionsService {
@@ -58,7 +58,7 @@ export class ConnectionsService {
     return this.connectionRepository.getConnectionList(skip, itemsPerPage, admin);
   }
 
-  async getConnectionTables(id: number): Promise<FormattedTableAndColumnQueryResult> {
+  async getConnectionTables(id: number): Promise<FormattedTableAndColumnQueryResult[]> {
     const connection = await this.connectionManager.getConnection(id);
     const connectionDescription = await this.connectionRepository.getDataForConnectionCreating(id);
     const query = dataBaseSelectTablesAndColumnsQuery[connectionDescription.type];

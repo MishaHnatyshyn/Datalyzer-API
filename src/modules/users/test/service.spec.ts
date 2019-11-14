@@ -3,9 +3,9 @@ import { UsersService } from '../users.service';
 import getRepositoryMock from '../../../mocks/repositoryMock';
 import usersMock from '../../../mocks/usersMock';
 import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../../constants';
-import userTypesMock from "../../../mocks/userTypeMock";
-import {BcryptService} from "../../../base/bcrypt.service";
-import CreateUserDto from "../dto/create.dto";
+import userTypesMock from '../../../mocks/userTypeMock';
+import {BcryptService} from '../../../base/bcrypt.service';
+import CreateUserDto from '../dto/create.dto';
 
 const userRepositoryMock = getRepositoryMock(usersMock);
 const userTypeRepositoryMock = getRepositoryMock(userTypesMock);
@@ -46,9 +46,9 @@ describe('User AuthService', () => {
         username: 'new user',
         password: '123321',
         user_type_id: 2,
-        description: 'bla bla'
-    }
-    userService.getByUserName = jest.fn().mockReturnValue(null)
+        description: 'bla bla',
+    };
+    userService.getByUserName = jest.fn().mockReturnValue(null);
     const createdUser = await userService.create(newUserData, 1);
     expect(createdUser.username).toBe(newUserData.username);
   });
