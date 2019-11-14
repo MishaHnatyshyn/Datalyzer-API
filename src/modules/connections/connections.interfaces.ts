@@ -15,3 +15,12 @@ export enum CreateConnectionErrorMessage {
   CANNOT_ESTABLISH_CONNECTION = 'Database is not reachable',
   DATABASE_TYPE_DOES_NOT_EXISTS = 'Database type does not exists'
 }
+
+export interface TableAndColumnQueryResult {
+  table: string;
+  column: string;
+}
+
+export interface FormattedTableAndColumnQueryResult {
+  [key: string]: string[];
+}

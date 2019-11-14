@@ -5,7 +5,7 @@ import { ConnectionsRepositoryService } from '../connections-repository.service'
 import { ConnectionTypeRepositoryService } from '../connection-type-repository.service';
 import { CreateConnectionDto } from '../dto/createConnection.dto';
 import {CreateConnectionErrorMessage} from '../connections.interfaces';
-import {DataBaseSelectTablesAndColumnsQuery} from '../utils';
+import {dataBaseSelectTablesAndColumnsQuery} from '../utils';
 
 jest.mock('../connection-manager.service');
 
@@ -143,7 +143,7 @@ describe('ConnectionsService', () => {
       expect(result).toStrictEqual(expectedResult);
       expect(connectionManagerMock.getConnection).toBeCalledWith(mockConnectionId);
       expect(connectionRepositoryMock.getDataForConnectionCreating).toBeCalledWith(mockConnectionId);
-      expect(mockConnection.query).toBeCalledWith(DataBaseSelectTablesAndColumnsQuery[mockDbType]);
+      expect(mockConnection.query).toBeCalledWith(dataBaseSelectTablesAndColumnsQuery[mockDbType]);
     });
   });
 });
