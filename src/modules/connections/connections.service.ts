@@ -4,7 +4,12 @@ import Connection from '../database/entities/connection.entity';
 import {ConnectionsRepositoryService} from './connections-repository.service';
 import {ConnectionTypeRepositoryService} from './connection-type-repository.service';
 import {ConnectionManagerService} from './connection-manager.service';
-import {CreateConnectionErrorMessage} from "./connections.interfaces";
+import {
+  CreateConnectionErrorMessage,
+  FormattedTableAndColumnQueryResult,
+  TableAndColumnQueryResult
+} from "./connections.interfaces";
+import {dataBaseSelectTablesAndColumnsQuery, formatTablesAndColumnsResponse} from "./utils";
 
 @Injectable()
 export class ConnectionsService {
@@ -51,6 +56,14 @@ export class ConnectionsService {
   getConnectionsList(page: number, itemsPerPage: number, admin: number) {
     const skip = (page - 1) * itemsPerPage;
     return this.connectionRepository.getConnectionList(skip, itemsPerPage, admin);
+  }
+
+  async getConnectionTables(id: number): Promise<FormattedTableAndColumnQueryResult> {
+    const connection = await this.connectionManager.getConnection(id);
+    const connectionDescription = await this.connectionRepository.getDataForConnectionCreating(id);
+    const query = dataBaseSelectTablesAndColumnsQuery[connectionDescription.type];
+    const result: TableAndColumnQueryResult[] = await connection.query(query);
+    return formatTablesAndColumnsResponse(result);
   }
 
 }

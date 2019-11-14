@@ -1,5 +1,4 @@
 import { BaseEntity, Repository } from 'typeorm';
-import Connection from "../modules/database/entities/connection.entity";
 
 export default class BaseRepositoryService<Entity extends BaseEntity> {
   constructor(

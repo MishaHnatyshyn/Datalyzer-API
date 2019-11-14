@@ -4,9 +4,10 @@ import { ConnectionManagerService } from '../connection-manager.service';
 import { ConnectionsRepositoryService } from '../connections-repository.service';
 import { ConnectionTypeRepositoryService } from '../connection-type-repository.service';
 import { CreateConnectionDto } from '../dto/createConnection.dto';
-import {CreateConnectionErrorMessage} from "../connections.interfaces";
+import {CreateConnectionErrorMessage} from '../connections.interfaces';
+import {dataBaseSelectTablesAndColumnsQuery} from '../utils';
 
-jest.mock('../connection-manager.service')
+jest.mock('../connection-manager.service');
 
 describe('ConnectionsService', () => {
   let service: ConnectionsService;
@@ -20,21 +21,28 @@ describe('ConnectionsService', () => {
     username: 'username',
     typeId: 1,
   };
-  const connectionManagerMock = {};
+  let connectionManagerMock = {
+    getConnection: jest.fn(),
+  };
   let connectionRepositoryMock = {
     getByConnectionName: jest.fn(),
     create: jest.fn(),
     getConnectionList: jest.fn(),
+    getDataForConnectionCreating: jest.fn(),
   };
   let connectionTypeRepositoryMock = {
     getConnectionTypeName: jest.fn(),
   };
   beforeEach(async () => {
+    connectionManagerMock = {
+      getConnection: jest.fn(),
+    };
     ConnectionManagerService.isReachable = jest.fn().mockReturnValue(true);
     connectionRepositoryMock = {
       getByConnectionName: jest.fn().mockReturnValue(null),
       create: jest.fn(),
       getConnectionList: jest.fn(),
+      getDataForConnectionCreating: jest.fn(),
     };
     connectionTypeRepositoryMock = {
       getConnectionTypeName: jest.fn().mockReturnValue(true),
@@ -59,35 +67,35 @@ describe('ConnectionsService', () => {
     it('should calculate proper skip value and send it to ConnectionRepositoryServer', () => {
       const skip = 10;
       service.getConnectionsList(2, 10, mockAdminId);
-      expect(connectionRepositoryMock.getConnectionList).toBeCalledWith(skip, 10, mockAdminId)
-    })
+      expect(connectionRepositoryMock.getConnectionList).toBeCalledWith(skip, 10, mockAdminId);
+    });
   });
 
   describe('createNewConnection', () => {
     it('should return proper error if connection name already exists', async () => {
       connectionRepositoryMock.getByConnectionName = jest.fn().mockReturnValue(true);
       try {
-        await service.createNewConnection(mockRequestData, mockAdminId)
+        await service.createNewConnection(mockRequestData, mockAdminId);
       } catch (e) {
-        expect(e.message.error).toBe(CreateConnectionErrorMessage.NAME_IS_NOT_UNIQ)
+        expect(e.message.error).toBe(CreateConnectionErrorMessage.NAME_IS_NOT_UNIQ);
       }
     });
 
     it('should return proper error if connection type doesn\'t exists', async () => {
       connectionTypeRepositoryMock.getConnectionTypeName = jest.fn().mockReturnValue(false);
       try {
-        await service.createNewConnection(mockRequestData, mockAdminId)
+        await service.createNewConnection(mockRequestData, mockAdminId);
       } catch (e) {
-        expect(e.message.error).toBe(CreateConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS)
+        expect(e.message.error).toBe(CreateConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS);
       }
     });
 
     it('should return proper error if connection can\'t be established', async () => {
       ConnectionManagerService.isReachable = jest.fn().mockReturnValue(false);
       try {
-        await service.createNewConnection(mockRequestData, mockAdminId)
+        await service.createNewConnection(mockRequestData, mockAdminId);
       } catch (e) {
-        expect(e.message.error).toBe(CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION)
+        expect(e.message.error).toBe(CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION);
       }
     });
 
@@ -95,8 +103,47 @@ describe('ConnectionsService', () => {
       const mockConnectionEntity = {};
       connectionRepositoryMock.create = jest.fn().mockReturnValue(mockConnectionEntity);
       const connection = await service.createNewConnection(mockRequestData, mockAdminId);
-      expect(connection).toBe(mockConnectionEntity)
+      expect(connection).toBe(mockConnectionEntity);
     });
 
+  });
+
+  describe('getConnectionTables', () => {
+    it('should request tables and columns data and format it to proper format', async () => {
+      const mockConnectionId = 1;
+      const mockDbType = 'postgres';
+      const mockTablesAndColumnsResponse = [
+        { table: 'table1', column: 'column1' },
+        { table: 'table1', column: 'column2' },
+        { table: 'table2', column: 'column1' },
+        { table: 'table2', column: 'column2' },
+        { table: 'table3', column: 'column1' },
+        { table: 'table3', column: 'column2' },
+      ];
+      const mockConnection = {
+        query: jest.fn().mockReturnValue(mockTablesAndColumnsResponse),
+      };
+      const expectedResult = {
+        table1: [
+          'column1',
+          'column2',
+        ],
+        table2: [
+          'column1',
+          'column2',
+        ],
+        table3: [
+          'column1',
+          'column2',
+        ],
+      };
+      connectionRepositoryMock.getDataForConnectionCreating.mockReturnValue({ type: mockDbType });
+      connectionManagerMock.getConnection.mockReturnValue(mockConnection);
+      const result = await service.getConnectionTables(mockConnectionId);
+      expect(result).toStrictEqual(expectedResult);
+      expect(connectionManagerMock.getConnection).toBeCalledWith(mockConnectionId);
+      expect(connectionRepositoryMock.getDataForConnectionCreating).toBeCalledWith(mockConnectionId);
+      expect(mockConnection.query).toBeCalledWith(dataBaseSelectTablesAndColumnsQuery[mockDbType]);
+    });
   });
 });
