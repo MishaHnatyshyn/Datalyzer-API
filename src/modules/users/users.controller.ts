@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { NewPasswordDto } from './dto/newPassword.dto';
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUseTags} from '@nestjs/swagger';
 import {UserResponseObject} from './response-objects/user-response-object';
+import {UserCountResponseObject} from './response-objects/user-count-response-object';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -28,6 +29,14 @@ export class UsersController {
   @Get()
   findAll(@Query() { page, itemsPerPage }: UserListDto, @Request() req) {
     return this.usersService.getUserList(page, itemsPerPage, req.user.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: UserCountResponseObject })
+  @UseGuards(AuthGuard('admin'))
+  @Get('count')
+  getCount(@Request() { user }) {
+    return this.usersService.getUsersCount(user.id);
   }
 
   @ApiBearerAuth()

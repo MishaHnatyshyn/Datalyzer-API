@@ -24,4 +24,11 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
       take: itemsPerPage,
     });
   }
+
+  getCount(options: object): Promise<number> {
+    return this.repository
+      .createQueryBuilder()
+      .where(options)
+      .getCount();
+  }
 }

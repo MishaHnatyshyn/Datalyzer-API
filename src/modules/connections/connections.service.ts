@@ -66,4 +66,9 @@ export class ConnectionsService {
     return formatTablesAndColumnsResponse(result);
   }
 
+  async getConnectionsCount(admin: number) {
+    const count = await this.connectionRepository.getCount({ admin_id: admin });
+    return { totalConnections: count };
+  }
+
 }
