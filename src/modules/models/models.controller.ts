@@ -1,10 +1,11 @@
 import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Query, Post, Request, UseGuards } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {ModelsService} from './models.service';
 import {ModelsCountResponseObject} from './response-objects/models-count-response-object';
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelDetailsResponseObject } from './response-objects/model-details-response-object';
+import {UserListDto} from '../users/dto/userList.dto';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -12,6 +13,12 @@ export class ModelsController {
   constructor(
     private modelsService: ModelsService,
   ) {}
+
+  @UseGuards(AuthGuard('admin'))
+  @Get()
+  getAll(@Query() { page, itemsPerPage }: UserListDto, @Request() { user }) {
+    return this.modelsService.getModelsList(page, itemsPerPage, user.id);
+  }
 
   @ApiBearerAuth()
   @ApiOkResponse({ type: ModelsCountResponseObject })
