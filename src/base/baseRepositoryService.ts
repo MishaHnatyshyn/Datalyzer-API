@@ -26,9 +26,6 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
   }
 
   getCount(options: object): Promise<number> {
-    return this.repository
-      .createQueryBuilder()
-      .where(options)
-      .getCount();
+    return this.repository.count(options);
   }
 }

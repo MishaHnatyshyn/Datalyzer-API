@@ -9,6 +9,6 @@ export class ModelsService {
 
   async getModelsCount(admin: number) {
     const count = await this.modelsRepositoryService.getCount({ admin_id: admin });
-    return { totalModels: count };
+    return { count };
   }
 }

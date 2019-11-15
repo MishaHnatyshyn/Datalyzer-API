@@ -112,7 +112,7 @@ export class UsersService extends BaseRepositoryService<User> {
 
   async getUsersCount(admin: number) {
     const count = await super.getCount({ created_by_id: admin });
-    return { totalUsers: count };
+    return { count };
   }
 
   async changePassword(
