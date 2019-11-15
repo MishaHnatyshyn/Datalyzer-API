@@ -123,20 +123,11 @@ describe('ConnectionsService', () => {
       const mockConnection = {
         query: jest.fn().mockReturnValue(mockTablesAndColumnsResponse),
       };
-      const expectedResult = {
-        table1: [
-          'column1',
-          'column2',
-        ],
-        table2: [
-          'column1',
-          'column2',
-        ],
-        table3: [
-          'column1',
-          'column2',
-        ],
-      };
+      const expectedResult = [
+        { tableName: 'table1', columns: [ 'column1', 'column2' ] },
+        { tableName: 'table2', columns: [ 'column1', 'column2' ] },
+        { tableName: 'table3', columns: [ 'column1', 'column2' ] },
+      ]
       connectionRepositoryMock.getDataForConnectionCreating.mockReturnValue({ type: mockDbType });
       connectionManagerMock.getConnection.mockReturnValue(mockConnection);
       const result = await service.getConnectionTables(mockConnectionId);

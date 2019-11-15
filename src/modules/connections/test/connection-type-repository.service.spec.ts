@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConnectionTypeRepositoryService } from '../connection-type-repository.service';
-import {CONNECTION_TYPE_REPOSITORY} from "../../../constants";
+import {CONNECTION_TYPE_REPOSITORY} from '../../../constants';
 
 describe('ConnectionTypeRepositoryService', () => {
   let service: ConnectionTypeRepositoryService;
@@ -9,9 +9,9 @@ describe('ConnectionTypeRepositoryService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: CONNECTION_TYPE_REPOSITORY, useValue: {}
+          provide: CONNECTION_TYPE_REPOSITORY, useValue: {},
         },
-        ConnectionTypeRepositoryService
+        ConnectionTypeRepositoryService,
       ],
     }).compile();
 

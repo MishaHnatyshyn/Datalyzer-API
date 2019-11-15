@@ -3,11 +3,11 @@ import {CONNECTION_REPOSITORY} from '../../constants';
 import {Repository} from 'typeorm';
 import Connection from '../database/entities/connection.entity';
 import {ConnectionData, DatabaseType} from './connections.interfaces';
-import BaseRepositoryService from "../../base/baseRepositoryService";
-import User from "../database/entities/user.entity";
+import BaseRepositoryService from '../../base/baseRepositoryService';
+import User from '../database/entities/user.entity';
 
 @Injectable()
-export class ConnectionsRepositoryService extends BaseRepositoryService<Connection>{
+export class ConnectionsRepositoryService extends BaseRepositoryService<Connection> {
   constructor(
     @Inject(CONNECTION_REPOSITORY)
     private readonly connectionRepository: Repository<Connection>,
@@ -48,6 +48,6 @@ export class ConnectionsRepositoryService extends BaseRepositoryService<Connecti
   }
 
   getConnectionList(skip: number, itemsPerPage: number, admin: number): Promise<Connection[]> {
-    return super.getPaginatedList(skip, itemsPerPage, { admin_id: admin })
+    return super.getPaginatedList(skip, itemsPerPage, { admin_id: admin });
   }
 }

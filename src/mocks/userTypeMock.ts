@@ -1,5 +1,5 @@
 import UserType from '../modules/database/entities/userType.entity';
-import User from "../modules/database/entities/user.entity";
+import User from '../modules/database/entities/user.entity';
 
 const userTypes = [
   {
@@ -17,6 +17,3 @@ const userTypesMock = userTypes.map((userType) => {
 });
 
 export default userTypesMock;
-
-
-

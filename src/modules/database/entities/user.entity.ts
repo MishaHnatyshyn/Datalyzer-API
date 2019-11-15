@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   JoinColumn,
   BaseEntity,
-  ManyToOne
+  ManyToOne,
 } from 'typeorm';
 import UserType from './userType.entity';
 

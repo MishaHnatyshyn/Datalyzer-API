@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -15,6 +16,18 @@ async function bootstrap() {
   );
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  const options = new DocumentBuilder()
+    .setTitle('Datalyzer')
+    .setDescription('The Datalyzer API description')
+    .setVersion('0.1')
+    .addTag('users')
+    .addTag('auth')
+    .addTag('connections')
+    .addTag('models')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('swagger', app, document);
   await app.listen(port, '0.0.0.0');
 }
 bootstrap();

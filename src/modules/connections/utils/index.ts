@@ -1,4 +1,8 @@
-import {FormattedTableAndColumnQueryResult, TableAndColumnQueryResult} from '../connections.interfaces';
+import {
+  FormattedTableAndColumnQueryResult,
+  GroupedTableAndColumnQueryResult,
+  TableAndColumnQueryResult,
+} from '../connections.interfaces';
 
 export const dataBaseSelectTablesAndColumnsQuery = {
   postgres: `
@@ -10,9 +14,9 @@ export const dataBaseSelectTablesAndColumnsQuery = {
   `,
 };
 
-export const formatTablesAndColumnsResponse = (
+export const groupColumnsByTables = (
   data: TableAndColumnQueryResult[],
-): FormattedTableAndColumnQueryResult => (
+): GroupedTableAndColumnQueryResult => (
     data.reduce((acc, { column, table }) => {
     if (acc[table]) {
       acc[table].push(column);
@@ -22,3 +26,8 @@ export const formatTablesAndColumnsResponse = (
     return acc;
   }, {})
 );
+
+export const formatTablesAndColumnsResponse = (data: TableAndColumnQueryResult[]): FormattedTableAndColumnQueryResult[] => {
+  const groupedData = groupColumnsByTables(data);
+  return Object.keys(groupedData).map((tableName) => ({ tableName, columns: groupedData[tableName] }));
+};

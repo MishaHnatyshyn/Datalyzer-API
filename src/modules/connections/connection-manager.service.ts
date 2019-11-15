@@ -26,7 +26,7 @@ export class ConnectionManagerService {
       this.connections.set(id, connection);
       return connection;
     } catch (e) {
-      console.log(e)
+      console.log(e);
       return null;
     }
   }
