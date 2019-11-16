@@ -7,6 +7,7 @@ import {ConnectionTablesDto} from './dto/connectionTables.dto';
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {ConnectionResponseObject} from './response-objects/connection-response-object';
 import {ConnectionTablesResponseObject} from './response-objects/connection-tables-response-object';
+import {ConnectionsCountResponseObject} from './response-objects/connections-count-response-object';
 
 @ApiUseTags('connections')
 @Controller('connections')
@@ -29,6 +30,14 @@ export class ConnectionsController {
   @Get()
   getAll(@Query() { page, itemsPerPage }: UserListDto, @Request() { user }) {
     return this.connectionsService.getConnectionsList(page, itemsPerPage, user.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: ConnectionsCountResponseObject })
+  @UseGuards(AuthGuard('admin'))
+  @Get('count')
+  getCount(@Request() { user }) {
+    return this.connectionsService.getConnectionsCount(user.id);
   }
 
   @ApiBearerAuth()
