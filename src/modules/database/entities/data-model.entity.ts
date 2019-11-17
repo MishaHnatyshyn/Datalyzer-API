@@ -24,6 +24,9 @@ export default class DataModel extends BaseEntity {
   @Column({ type: 'number', nullable: false })
   db_connection_id: number;
 
+  @Column({ type: 'boolean', default: true, nullable: true })
+  active: boolean;
+
   @ManyToOne(type => Connection)
   @JoinColumn({name: 'db_connection_id'})
   db_connection: Connection;
