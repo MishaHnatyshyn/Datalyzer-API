@@ -51,9 +51,9 @@ export class ConnectionsController {
 
   @ApiBearerAuth()
   @ApiOkResponse({type: []})
-  // @UseGuards(AuthGuard('user'))
-  @Get('check/:id')
-  isReachable(@Param() { id }: CheckConnectionDto) {
+  @UseGuards(AuthGuard('user'))
+  @Get(':id/check')
+  checkIfReachable(@Param() { id }: CheckConnectionDto) {
     return this.connectionsService.isReachable(id);
   }
 }
