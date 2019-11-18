@@ -8,6 +8,7 @@ import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nes
 import {ConnectionResponseObject} from './response-objects/connection-response-object';
 import {ConnectionTablesResponseObject} from './response-objects/connection-tables-response-object';
 import {ConnectionsCountResponseObject} from './response-objects/connections-count-response-object';
+import { CheckConnectionDto } from './dto/checkConnection.dto';
 
 @ApiUseTags('connections')
 @Controller('connections')
@@ -46,5 +47,13 @@ export class ConnectionsController {
   @Get(':id/tables')
   getDescription(@Param() { id }: ConnectionTablesDto) {
     return this.connectionsService.getConnectionTables(id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({type: []})
+  // @UseGuards(AuthGuard('user'))
+  @Get('check/:id')
+  isReachable(@Param() { id }: CheckConnectionDto) {
+    return this.connectionsService.isReachable(id);
   }
 }

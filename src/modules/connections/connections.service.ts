@@ -71,4 +71,14 @@ export class ConnectionsService {
     return { count };
   }
 
+  async isReachable(id: number) {
+    const connection = await this.connectionManager.getConnection(id);
+    if (!connection) {
+      throw new HttpException({
+        error: CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
+      },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+  }
 }
