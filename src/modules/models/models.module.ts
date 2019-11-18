@@ -2,12 +2,22 @@ import { Module } from '@nestjs/common';
 import { ModelsController } from './models.controller';
 import { ModelsService } from './models.service';
 import { ModelsRepositoryService } from './models-repository.service';
+import { ModelItemsRepositoryService } from './model-items-repository.service';
+import { ModelItemsFieldRepositoryService } from './model-items-field-repository.service';
+import { ModelItemsRelationRepositoryService } from './model-items-relation-repository.service';
 import DatabaseModule from '../database';
 import modelsProviders from './models.providers';
 
 @Module({
   imports: [DatabaseModule],
   controllers: [ModelsController],
-  providers: [...modelsProviders, ModelsService, ModelsRepositoryService],
+  providers: [
+    ...modelsProviders,
+    ModelsService,
+    ModelsRepositoryService,
+    ModelItemsRepositoryService,
+    ModelItemsFieldRepositoryService,
+    ModelItemsRelationRepositoryService,
+  ],
 })
 export class ModelsModule {}
