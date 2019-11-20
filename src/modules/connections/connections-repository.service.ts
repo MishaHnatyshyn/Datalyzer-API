@@ -48,6 +48,6 @@ export class ConnectionsRepositoryService extends BaseRepositoryService<Connecti
   }
 
   getConnectionList(skip: number, itemsPerPage: number, admin: number): Promise<Connection[]> {
-    return super.getPaginatedList(skip, itemsPerPage, { admin_id: admin });
+    return super.getPaginatedList({ skip, itemsPerPage, matcher: { admin_id: admin } });
   }
 }

@@ -17,9 +17,10 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
    return this.repository.findOne(options);
   }
 
-  getPaginatedList(skip: number, itemsPerPage: number, matcher?: object): Promise<Entity[]> {
+  getPaginatedList({ skip, itemsPerPage, matcher, relations = [] }): Promise<Entity[]> {
     return this.repository.find({
       where: matcher,
+      relations,
       skip,
       take: itemsPerPage,
     });

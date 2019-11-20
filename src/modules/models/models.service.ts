@@ -17,6 +17,11 @@ export class ModelsService {
     private modelItemsRelationRepositoryService: ModelItemsRelationRepositoryService,
   ) {}
 
+  getModelsList(page, itemsPerPage, admin) {
+    const skip = (page - 1) * itemsPerPage;
+    return this.modelsRepositoryService.getPaginatedModelList(skip, itemsPerPage, admin);
+  }
+
   async getModelsCount(admin: number) {
     const count = await this.modelsRepositoryService.getCount({ admin_id: admin });
     return { count };
