@@ -9,7 +9,7 @@ describe('ModelItemsRepositoryService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         { provide: MODEL_ITEM_REPOSITORY, useValue: {} },
-        ModelItemsRepositoryService
+        ModelItemsRepositoryService,
       ],
     }).compile();
 

@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import BaseRepositoryService from '../../base/baseRepositoryService';
 import DataModel from '../database/entities/data-model.entity';
 import { MODEL_REPOSITORY } from '../../constants';
-import { EntityManager, Repository } from 'typeorm';
+import {EntityManager, Repository} from 'typeorm';
 import DataModelItem from '../database/entities/data-model-item.entity';
 import DataModelItemField from '../database/entities/data-model-item-field.entity';
+import {searchQuery} from '../../base/utils';
 
 @Injectable()
 export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
@@ -23,7 +24,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
     return connectionManager ? connectionManager.save(model) : this.modelRepository.create(model);
   }
 
-  getPaginatedModelList(skip: number, itemsPerPage: number, admin: number) {
+  getPaginatedModelList(skip: number, itemsPerPage: number, search: string, admin: number) {
     return this.modelRepository
       .createQueryBuilder('model')
       .select([
@@ -35,7 +36,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
         'COUNT(table.id) AS tables',
         'COUNT(field.id) AS fields',
       ])
-      .where({ admin_id: admin })
+      .where({ admin_id: admin, name: searchQuery(search) })
       .innerJoin('model.db_connection', 'connection')
       .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
       .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')

@@ -7,6 +7,7 @@ import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
 import {BcryptService} from '../../base/bcrypt.service';
 import UserType from '../database/entities/userType.entity';
 import { NewPasswordDto } from './dto/newPassword.dto';
+import {searchQuery} from '../../base/utils';
 
 @Injectable()
 export class UsersService extends BaseRepositoryService<User> {
@@ -57,9 +58,9 @@ export class UsersService extends BaseRepositoryService<User> {
     });
   }
 
-  getUserList(page: number, itemsPerPage: number, admin: number): Promise<User[]> {
+  getUserList(page: number, itemsPerPage: number, search: string, admin: number): Promise<User[]> {
     const skip = (page - 1) * itemsPerPage;
-    return super.getPaginatedList({ skip, itemsPerPage, matcher: { created_by_id: admin } });
+    return super.getPaginatedList({ skip, itemsPerPage, matcher: { created_by_id: admin, username: searchQuery(search) } });
   }
 
   getUsersByType(type: string): Promise<User[]> {

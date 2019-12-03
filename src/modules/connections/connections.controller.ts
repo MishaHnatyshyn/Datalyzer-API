@@ -2,7 +2,7 @@ import {Body, Controller, Post, UseGuards, Request, Get, Query, Param} from '@ne
 import {AuthGuard} from '@nestjs/passport';
 import {CreateConnectionDto} from './dto/createConnection.dto';
 import {ConnectionsService} from './connections.service';
-import { UserListDto } from '../users/dto/userList.dto';
+import { SearchDto } from '../users/dto/searchDto';
 import {ConnectionTablesDto} from './dto/connectionTables.dto';
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {ConnectionResponseObject} from './response-objects/connection-response-object';
@@ -29,8 +29,8 @@ export class ConnectionsController {
   @ApiOkResponse({ type: [ConnectionResponseObject] })
   @UseGuards(AuthGuard('admin'))
   @Get()
-  getAll(@Query() { page, itemsPerPage }: UserListDto, @Request() { user }) {
-    return this.connectionsService.getConnectionsList(page, itemsPerPage, user.id);
+  getAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() { user }) {
+    return this.connectionsService.getConnectionsList(page, itemsPerPage, search, user.id);
   }
 
   @ApiBearerAuth()

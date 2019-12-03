@@ -15,7 +15,7 @@ describe('ModelsService', () => {
         { provide: ModelItemsRepositoryService, useValue: {} },
         { provide: ModelItemsFieldRepositoryService, useValue: {} },
         { provide: ModelItemsRelationRepositoryService, useValue: {} },
-        ModelsService
+        ModelsService,
       ],
     }).compile();
 
