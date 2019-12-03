@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Request, UseGuards, Query, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
-import { UserListDto } from './dto/userList.dto';
+import { SearchDto } from './dto/searchDto';
 import { AuthGuard } from '@nestjs/passport';
 import { NewPasswordDto } from './dto/newPassword.dto';
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUseTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {UserResponseObject} from './response-objects/user-response-object';
 import {UserCountResponseObject} from './response-objects/user-count-response-object';
 
@@ -27,8 +27,8 @@ export class UsersController {
   @ApiOkResponse({ type: [UserResponseObject] })
   @UseGuards(AuthGuard('admin'))
   @Get()
-  findAll(@Query() { page, itemsPerPage }: UserListDto, @Request() req) {
-    return this.usersService.getUserList(page, itemsPerPage, req.user.id);
+  findAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() req) {
+    return this.usersService.getUserList(page, itemsPerPage, search, req.user.id);
   }
 
   @ApiBearerAuth()

@@ -66,8 +66,8 @@ describe('ConnectionsService', () => {
   describe('getConnectionsList', () => {
     it('should calculate proper skip value and send it to ConnectionRepositoryServer', () => {
       const skip = 10;
-      service.getConnectionsList(2, 10, mockAdminId);
-      expect(connectionRepositoryMock.getConnectionList).toBeCalledWith(skip, 10, mockAdminId);
+      service.getConnectionsList(2, 10, '', mockAdminId);
+      expect(connectionRepositoryMock.getConnectionList).toBeCalledWith(skip, 10, '', mockAdminId);
     });
   });
 
@@ -127,7 +127,7 @@ describe('ConnectionsService', () => {
         { tableName: 'table1', columns: [ 'column1', 'column2' ] },
         { tableName: 'table2', columns: [ 'column1', 'column2' ] },
         { tableName: 'table3', columns: [ 'column1', 'column2' ] },
-      ]
+      ];
       connectionRepositoryMock.getDataForConnectionCreating.mockReturnValue({ type: mockDbType });
       connectionManagerMock.getConnection.mockReturnValue(mockConnection);
       const result = await service.getConnectionTables(mockConnectionId);

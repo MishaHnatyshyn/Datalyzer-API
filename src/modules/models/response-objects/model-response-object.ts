@@ -1,6 +1,6 @@
 import {ApiResponseModelProperty} from '@nestjs/swagger';
 
-export default class ModelResponseObject{
+export default class ModelResponseObject {
   @ApiResponseModelProperty()
   id: number;
 

@@ -14,7 +14,7 @@ export class ModelItemsRepositoryService extends BaseRepositoryService<DataModel
   }
 
   createModelItem(name, tableName, modelId, connectionManager) {
-    const modelItem = new DataModelItem()
+    const modelItem = new DataModelItem();
     modelItem.model_id = modelId;
     modelItem.name = name;
     modelItem.table_name = tableName;

@@ -5,7 +5,7 @@ import {ModelsService} from './models.service';
 import {ModelsCountResponseObject} from './response-objects/models-count-response-object';
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelDetailsResponseObject } from './response-objects/model-details-response-object';
-import {UserListDto} from '../users/dto/userList.dto';
+import {SearchDto} from '../users/dto/searchDto';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -16,8 +16,8 @@ export class ModelsController {
 
   @UseGuards(AuthGuard('admin'))
   @Get()
-  getAll(@Query() { page, itemsPerPage }: UserListDto, @Request() { user }) {
-    return this.modelsService.getModelsList(page, itemsPerPage, user.id);
+  getAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() { user }) {
+    return this.modelsService.getModelsList(page, itemsPerPage, search, user.id);
   }
 
   @ApiBearerAuth()

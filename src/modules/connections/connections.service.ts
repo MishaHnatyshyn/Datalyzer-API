@@ -53,9 +53,9 @@ export class ConnectionsService {
     return this.connectionRepository.create({ ...data, adminId: admin});
   }
 
-  getConnectionsList(page: number, itemsPerPage: number, admin: number) {
+  getConnectionsList(page: number, itemsPerPage: number, search: string, admin: number) {
     const skip = (page - 1) * itemsPerPage;
-    return this.connectionRepository.getConnectionList(skip, itemsPerPage, admin);
+    return this.connectionRepository.getConnectionList(skip, itemsPerPage, search, admin);
   }
 
   async getConnectionTables(id: number): Promise<FormattedTableAndColumnQueryResult[]> {
