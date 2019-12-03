@@ -4,8 +4,8 @@ import { ConnectionManagerService } from '../connection-manager.service';
 import { ConnectionsRepositoryService } from '../connections-repository.service';
 import { ConnectionTypeRepositoryService } from '../connection-type-repository.service';
 import { CreateConnectionDto } from '../dto/createConnection.dto';
-import {CreateConnectionErrorMessage} from '../connections.interfaces';
-import {dataBaseSelectTablesAndColumnsQuery} from '../utils';
+import {ConnectionErrorMessage} from '../connections.interfaces';
+import queries from '../../database/queries';
 
 jest.mock('../connection-manager.service');
 
@@ -77,7 +77,7 @@ describe('ConnectionsService', () => {
       try {
         await service.createNewConnection(mockRequestData, mockAdminId);
       } catch (e) {
-        expect(e.message.error).toBe(CreateConnectionErrorMessage.NAME_IS_NOT_UNIQ);
+        expect(e.message.error).toBe(ConnectionErrorMessage.NAME_IS_NOT_UNIQ);
       }
     });
 
@@ -86,7 +86,7 @@ describe('ConnectionsService', () => {
       try {
         await service.createNewConnection(mockRequestData, mockAdminId);
       } catch (e) {
-        expect(e.message.error).toBe(CreateConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS);
+        expect(e.message.error).toBe(ConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS);
       }
     });
 
@@ -95,7 +95,7 @@ describe('ConnectionsService', () => {
       try {
         await service.createNewConnection(mockRequestData, mockAdminId);
       } catch (e) {
-        expect(e.message.error).toBe(CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION);
+        expect(e.message.error).toBe(ConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION);
       }
     });
 
@@ -134,7 +134,32 @@ describe('ConnectionsService', () => {
       expect(result).toStrictEqual(expectedResult);
       expect(connectionManagerMock.getConnection).toBeCalledWith(mockConnectionId);
       expect(connectionRepositoryMock.getDataForConnectionCreating).toBeCalledWith(mockConnectionId);
-      expect(mockConnection.query).toBeCalledWith(dataBaseSelectTablesAndColumnsQuery[mockDbType]);
+      expect(mockConnection.query).toBeCalledWith(queries.dataBaseSelectTablesAndColumnsQuery[mockDbType]);
+    });
+  });
+
+  describe('getConnectionRelations', () => {
+    it('should request relations data and format it to proper format', async () => {
+      const mockConnectionId = 1;
+      const mockDbType = 'postgres';
+      const mockRelationsResponse = [
+        { fk_column: 'fk_column', foreign_table: 'foreign_table', pk_column: 'pk_column', primary_table: 'primary_table' },
+        { fk_column: 'fk_column1', foreign_table: 'foreign_table1', pk_column: 'pk_column1', primary_table: 'primary_table1' },
+      ];
+      const mockConnection = {
+        query: jest.fn().mockReturnValue(mockRelationsResponse),
+      };
+      const expectedResult = [
+        { fkColumn: 'fk_column', foreignTable: 'foreign_table', pkColumn: 'pk_column', primaryTable: 'primary_table' },
+        { fkColumn: 'fk_column1', foreignTable: 'foreign_table1', pkColumn: 'pk_column1', primaryTable: 'primary_table1' },
+      ];
+      connectionRepositoryMock.getDataForConnectionCreating.mockReturnValue({ type: mockDbType });
+      connectionManagerMock.getConnection.mockReturnValue(mockConnection);
+      const result = await service.getConnectionRelations(mockConnectionId);
+      expect(result).toStrictEqual(expectedResult);
+      expect(connectionManagerMock.getConnection).toBeCalledWith(mockConnectionId);
+      expect(connectionRepositoryMock.getDataForConnectionCreating).toBeCalledWith(mockConnectionId);
+      expect(mockConnection.query).toBeCalledWith(queries.dataBaseRelationsQuery[mockDbType]);
     });
   });
 });
