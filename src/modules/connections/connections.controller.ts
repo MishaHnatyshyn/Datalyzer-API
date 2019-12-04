@@ -9,6 +9,7 @@ import {ConnectionResponseObject} from './response-objects/connection-response-o
 import {ConnectionTablesResponseObject} from './response-objects/connection-tables-response-object';
 import {ConnectionsCountResponseObject} from './response-objects/connections-count-response-object';
 import { CheckConnectionDto } from './dto/checkConnection.dto';
+import { ConnectionRelationsResponseObject } from './response-objects/connection-relations-response-object';
 
 @ApiUseTags('connections')
 @Controller('connections')
@@ -47,6 +48,14 @@ export class ConnectionsController {
   @Get(':id/tables')
   getDescription(@Param() { id }: ConnectionTablesDto) {
     return this.connectionsService.getConnectionTables(id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [ConnectionRelationsResponseObject] })
+  @UseGuards(AuthGuard('admin'))
+  @Get(':id/relations')
+  getRelations(@Param() { id }: ConnectionTablesDto) {
+    return this.connectionsService.getConnectionRelations(id);
   }
 
   @ApiBearerAuth()

@@ -5,11 +5,14 @@ import {ConnectionsRepositoryService} from './connections-repository.service';
 import {ConnectionTypeRepositoryService} from './connection-type-repository.service';
 import {ConnectionManagerService} from './connection-manager.service';
 import {
-  CreateConnectionErrorMessage,
+  ConnectionErrorMessage,
+  FormattedRelationQueryResult,
   FormattedTableAndColumnQueryResult,
+  RelationsQueryResult,
   TableAndColumnQueryResult,
 } from './connections.interfaces';
-import {dataBaseSelectTablesAndColumnsQuery, formatTablesAndColumnsResponse} from './utils';
+import { formatRelationsResponse, formatTablesAndColumnsResponse } from './utils';
+import queries from '../database/queries';
 
 @Injectable()
 export class ConnectionsService {
@@ -23,14 +26,14 @@ export class ConnectionsService {
     const connectionWithSameName = await this.connectionRepository.getByConnectionName(data.name);
     if (connectionWithSameName) {
       throw new HttpException({
-        error: CreateConnectionErrorMessage.NAME_IS_NOT_UNIQ,
+        error: ConnectionErrorMessage.NAME_IS_NOT_UNIQ,
       }, HttpStatus.BAD_REQUEST);
     }
 
     const connectionTypeName = await this.connectionTypeRepository.getConnectionTypeName(data.typeId);
     if (!connectionTypeName) {
       throw new HttpException({
-        error: CreateConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS,
+        error: ConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS,
       }, HttpStatus.BAD_REQUEST);
     }
 
@@ -46,7 +49,7 @@ export class ConnectionsService {
 
     if (!isDatabaseReachable) {
       throw new HttpException({
-        error: CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
+        error: ConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
       }, HttpStatus.BAD_REQUEST);
     }
 
@@ -59,11 +62,13 @@ export class ConnectionsService {
   }
 
   async getConnectionTables(id: number): Promise<FormattedTableAndColumnQueryResult[]> {
-    const connection = await this.connectionManager.getConnection(id);
-    const connectionDescription = await this.connectionRepository.getDataForConnectionCreating(id);
-    const query = dataBaseSelectTablesAndColumnsQuery[connectionDescription.type];
-    const result: TableAndColumnQueryResult[] = await connection.query(query);
+    const result = await this.execRawQuery<TableAndColumnQueryResult[]>(id, queries.dataBaseSelectTablesAndColumnsQuery);
     return formatTablesAndColumnsResponse(result);
+  }
+
+  async getConnectionRelations(id: number): Promise<FormattedRelationQueryResult[]> {
+    const result = await this.execRawQuery<RelationsQueryResult[]>(id, queries.dataBaseRelationsQuery);
+    return formatRelationsResponse(result);
   }
 
   async getConnectionsCount(admin: number) {
@@ -75,10 +80,24 @@ export class ConnectionsService {
     const connection = await this.connectionManager.getConnection(id);
     if (!connection) {
       throw new HttpException({
-        error: CreateConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
+        error: ConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
       },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
+  }
+
+  private async execRawQuery<T>(id: number, query: object): Promise<T> {
+    const [ connection, connectionDescription ] = await Promise.all([
+      this.connectionManager.getConnection(id),
+      this.connectionRepository.getDataForConnectionCreating(id),
+    ]);
+    if (!connection || !connectionDescription) {
+      throw new HttpException({
+        error: ConnectionErrorMessage.CONNECTION_DOES_NOT_EXISTS,
+      }, HttpStatus.BAD_REQUEST);
+    }
+    const rawQuery = query[connectionDescription.type];
+    return connection.query(rawQuery);
   }
 }
