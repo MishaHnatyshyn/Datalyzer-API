@@ -3,7 +3,7 @@ import { ModelsRepositoryService } from './models-repository.service';
 import { ModelItemsRepositoryService } from './model-items-repository.service';
 import { ModelItemsFieldRepositoryService } from './model-items-field-repository.service';
 import { ModelItemsRelationRepositoryService } from './model-items-relation-repository.service';
-import { EntityManager, getManager } from 'typeorm';
+import { EntityManager, getManager, In } from 'typeorm';
 import { CreateModelDto } from './dto/createModel.dto';
 import { RelationItem } from './dto/relationItem.dto';
 import { ModelItem } from './dto/modelItem.dto';
@@ -80,5 +80,9 @@ export class ModelsService {
     const { id: modelItemId } = modelItem;
     await this.modelItemsFieldRepositoryService.createModelItemFields(rows, modelItemId, connectionManager);
     return modelItem;
+  }
+
+  async deleteModel(id: number) {
+    return this.modelsRepositoryService.delete({ id });
   }
 }

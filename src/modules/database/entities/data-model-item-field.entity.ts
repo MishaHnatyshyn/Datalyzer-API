@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import DataModelItem from './data-model-item.entity';
+import DataModel from './data-model.entity';
 
 @Entity()
 export default class DataModelItemField extends BaseEntity {
@@ -27,7 +28,7 @@ export default class DataModelItemField extends BaseEntity {
   @Column({ type: 'number', nullable: false })
   model_item_id: number;
 
-  @ManyToOne(type => DataModelItem)
+  @ManyToOne(type => DataModelItem, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'model_item_id'})
   model_item: DataModelItem;
 

@@ -4,11 +4,12 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
+  ManyToOne, OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import DataModel from './data-model.entity';
+import DataModelItemField from './data-model-item-field.entity';
 
 @Entity()
 export default class DataModelItem extends BaseEntity {
@@ -24,7 +25,7 @@ export default class DataModelItem extends BaseEntity {
   @Column({ type: 'number', nullable: false })
   model_id: number;
 
-  @ManyToOne(type => DataModel)
+  @ManyToOne(type => DataModel, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'model_id'})
   model: DataModel;
 

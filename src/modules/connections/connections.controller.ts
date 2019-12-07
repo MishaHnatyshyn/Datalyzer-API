@@ -2,7 +2,7 @@ import {Body, Controller, Post, UseGuards, Request, Get, Query, Param} from '@ne
 import {AuthGuard} from '@nestjs/passport';
 import {CreateConnectionDto} from './dto/createConnection.dto';
 import {ConnectionsService} from './connections.service';
-import { SearchDto } from '../users/dto/searchDto';
+import { SearchDto } from '../shared/dto/searchDto';
 import {ConnectionTablesDto} from './dto/connectionTables.dto';
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {ConnectionResponseObject} from './response-objects/connection-response-object';

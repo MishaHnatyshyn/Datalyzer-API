@@ -1,11 +1,12 @@
 import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { Body, Controller, Get, Query, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Query, Post, Request, UseGuards, Delete, Param } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {ModelsService} from './models.service';
 import {ModelsCountResponseObject} from './response-objects/models-count-response-object';
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelDetailsResponseObject } from './response-objects/model-details-response-object';
-import {SearchDto} from '../users/dto/searchDto';
+import {SearchDto} from '../shared/dto/searchDto';
+import { ModelIdDto } from './dto/modelId.dto';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -18,6 +19,12 @@ export class ModelsController {
   @Get()
   getAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() { user }) {
     return this.modelsService.getModelsList(page, itemsPerPage, search, user.id);
+  }
+
+  @UseGuards(AuthGuard('admin'))
+  @Delete(':id')
+  deleteModel(@Param() { id }: ModelIdDto) {
+    return this.modelsService.deleteModel(id);
   }
 
   @ApiBearerAuth()

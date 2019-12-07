@@ -29,4 +29,8 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
   getCount(options: object): Promise<number> {
     return this.repository.count(options);
   }
+
+  delete(matcher: object) {
+    return this.repository.delete(matcher);
+  }
 }

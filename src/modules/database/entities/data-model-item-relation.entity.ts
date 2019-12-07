@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import DataModelItem from './data-model-item.entity';
+import DataModel from './data-model.entity';
 
 @Entity()
 export default class DataModelItemRelation extends BaseEntity {
@@ -24,14 +25,14 @@ export default class DataModelItemRelation extends BaseEntity {
   @Column({ type: 'number', nullable: false })
   first_model_item_id: number;
 
-  @ManyToOne(type => DataModelItem)
+  @ManyToOne(type => DataModelItem, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'first_model_item_id'})
   first_model_item: DataModelItem;
 
   @Column({ type: 'number', nullable: false })
   second_model_item_id: number;
 
-  @ManyToOne(type => DataModelItem)
+  @ManyToOne(type => DataModelItem, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'second_model_item_id'})
   second_model_item: DataModelItem;
 

@@ -3,12 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity, JoinColumn,
-  ManyToOne, OneToOne,
+  ManyToOne, OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import User from './user.entity';
 import Connection from './connection.entity';
+import DataModelItem from './data-model-item.entity';
 
 @Entity()
 export default class DataModel extends BaseEntity {
