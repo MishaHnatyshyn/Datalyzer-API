@@ -43,7 +43,7 @@ export default class Connection extends BaseEntity {
   @JoinColumn({name: 'type_id'})
   type: ConnectionType;
 
-  @OneToOne(type => Users)
+  @ManyToOne(type => Users)
   @JoinColumn({name: 'admin_id'})
   admin: ConnectionType;
 
