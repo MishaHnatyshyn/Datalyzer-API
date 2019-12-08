@@ -28,7 +28,7 @@ export default class DataModel extends BaseEntity {
   @Column({ type: 'boolean', default: true, nullable: true })
   active: boolean;
 
-  @ManyToOne(type => Connection)
+  @ManyToOne(type => Connection, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'db_connection_id'})
   db_connection: Connection;
 
