@@ -8,6 +8,7 @@ import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nes
 import {UserResponseObject} from './response-objects/user-response-object';
 import {UserCountResponseObject} from './response-objects/user-count-response-object';
 import { IdDto } from '../shared/dto/id.dto';
+import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -24,6 +25,7 @@ export class UsersController {
     return this.usersService.create(createDto, req.user.id);
   }
 
+  @ApiOkResponse({ type: DeleteResponseObject })
   @ApiBearerAuth()
   @UseGuards(AuthGuard('admin'))
   @Delete(':id')

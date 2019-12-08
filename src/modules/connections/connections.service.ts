@@ -100,4 +100,8 @@ export class ConnectionsService {
     const rawQuery = query[connectionDescription.type];
     return connection.query(rawQuery);
   }
+
+  deleteConnection(id: number) {
+    return this.connectionRepository.delete({ id });
+  }
 }

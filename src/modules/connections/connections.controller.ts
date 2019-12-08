@@ -1,4 +1,4 @@
-import {Body, Controller, Post, UseGuards, Request, Get, Query, Param} from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request, Get, Query, Param, Delete } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {CreateConnectionDto} from './dto/createConnection.dto';
 import {ConnectionsService} from './connections.service';
@@ -9,6 +9,7 @@ import {ConnectionTablesResponseObject} from './response-objects/connection-tabl
 import {ConnectionsCountResponseObject} from './response-objects/connections-count-response-object';
 import { ConnectionRelationsResponseObject } from './response-objects/connection-relations-response-object';
 import { IdDto } from '../shared/dto/id.dto';
+import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 
 @ApiUseTags('connections')
 @Controller('connections')
@@ -23,6 +24,14 @@ export class ConnectionsController {
   @Post()
   create(@Body() data: CreateConnectionDto, @Request() { user }) {
     return this.connectionsService.createNewConnection(data, user.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: DeleteResponseObject })
+  @UseGuards(AuthGuard('admin'))
+  @Delete(':id')
+  delete(@Param() { id }: IdDto) {
+    return this.connectionsService.deleteConnection(id);
   }
 
   @ApiBearerAuth()

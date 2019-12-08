@@ -21,18 +21,9 @@ describe('ConnectionsService', () => {
     username: 'username',
     typeId: 1,
   };
-  let connectionManagerMock = {
-    getConnection: jest.fn(),
-  };
-  let connectionRepositoryMock = {
-    getByConnectionName: jest.fn(),
-    create: jest.fn(),
-    getConnectionList: jest.fn(),
-    getDataForConnectionCreating: jest.fn(),
-  };
-  let connectionTypeRepositoryMock = {
-    getConnectionTypeName: jest.fn(),
-  };
+  let connectionManagerMock;
+  let connectionRepositoryMock;
+  let connectionTypeRepositoryMock;
   beforeEach(async () => {
     connectionManagerMock = {
       getConnection: jest.fn(),
@@ -43,6 +34,7 @@ describe('ConnectionsService', () => {
       create: jest.fn(),
       getConnectionList: jest.fn(),
       getDataForConnectionCreating: jest.fn(),
+      delete: jest.fn(),
     };
     connectionTypeRepositoryMock = {
       getConnectionTypeName: jest.fn().mockReturnValue(true),
@@ -160,6 +152,14 @@ describe('ConnectionsService', () => {
       expect(connectionManagerMock.getConnection).toBeCalledWith(mockConnectionId);
       expect(connectionRepositoryMock.getDataForConnectionCreating).toBeCalledWith(mockConnectionId);
       expect(mockConnection.query).toBeCalledWith(queries.dataBaseRelationsQuery[mockDbType]);
+    });
+  });
+
+  describe('deleteConnection', () => {
+    it('should call delete method of repository service', async () => {
+      const id = 1;
+      await service.deleteConnection(id);
+      expect(connectionRepositoryMock.delete).toBeCalledWith({ id });
     });
   });
 });

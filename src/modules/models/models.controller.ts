@@ -7,6 +7,7 @@ import { CreateModelDto } from './dto/createModel.dto';
 import { ModelDetailsResponseObject } from './response-objects/model-details-response-object';
 import {SearchDto} from '../shared/dto/searchDto';
 import { IdDto } from '../shared/dto/id.dto';
+import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -21,6 +22,8 @@ export class ModelsController {
     return this.modelsService.getModelsList(page, itemsPerPage, search, user.id);
   }
 
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: DeleteResponseObject })
   @UseGuards(AuthGuard('admin'))
   @Delete(':id')
   deleteModel(@Param() { id }: IdDto) {
