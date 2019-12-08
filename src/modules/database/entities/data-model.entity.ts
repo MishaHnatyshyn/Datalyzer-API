@@ -32,7 +32,7 @@ export default class DataModel extends BaseEntity {
   @JoinColumn({name: 'db_connection_id'})
   db_connection: Connection;
 
-  @ManyToOne(type => User)
+  @ManyToOne(type => User, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'admin_id'})
   admin: User;
 

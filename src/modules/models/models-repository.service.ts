@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import BaseRepositoryService from '../../base/baseRepositoryService';
+import BaseRepositoryService from '../../base/baseRepository.service';
 import DataModel from '../database/entities/data-model.entity';
 import { MODEL_REPOSITORY } from '../../constants';
 import {EntityManager, Repository} from 'typeorm';

@@ -6,7 +6,7 @@ import {ModelsCountResponseObject} from './response-objects/models-count-respons
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelDetailsResponseObject } from './response-objects/model-details-response-object';
 import {SearchDto} from '../shared/dto/searchDto';
-import { ModelIdDto } from './dto/modelId.dto';
+import { IdDto } from '../shared/dto/id.dto';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -23,7 +23,7 @@ export class ModelsController {
 
   @UseGuards(AuthGuard('admin'))
   @Delete(':id')
-  deleteModel(@Param() { id }: ModelIdDto) {
+  deleteModel(@Param() { id }: IdDto) {
     return this.modelsService.deleteModel(id);
   }
 

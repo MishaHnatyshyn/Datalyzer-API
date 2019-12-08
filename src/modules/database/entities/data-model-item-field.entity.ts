@@ -9,7 +9,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import DataModelItem from './data-model-item.entity';
-import DataModel from './data-model.entity';
 
 @Entity()
 export default class DataModelItemField extends BaseEntity {

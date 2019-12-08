@@ -1,3 +1,3 @@
-import {Like, Raw} from 'typeorm';
+import {Like} from 'typeorm';
 
 export const searchQuery = (value = '') => Like(`%${value}%`);
