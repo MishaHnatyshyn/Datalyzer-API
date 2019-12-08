@@ -1,7 +1,7 @@
 import {Injectable, Inject, HttpException, HttpStatus} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import User from '../database/entities/user.entity';
-import BaseRepositoryService from '../../base/baseRepositoryService';
+import BaseRepositoryService from '../../base/baseRepository.service';
 import CreateUserDto from './dto/create.dto';
 import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
 import {BcryptService} from '../../base/bcrypt.service';
@@ -136,5 +136,9 @@ export class UsersService extends BaseRepositoryService<User> {
       {id},
       {password: newPassword},
       );
+  }
+
+  deleteUser(id: number) {
+    return this.userRepository.delete({ id });
   }
 }

@@ -3,13 +3,12 @@ import {AuthGuard} from '@nestjs/passport';
 import {CreateConnectionDto} from './dto/createConnection.dto';
 import {ConnectionsService} from './connections.service';
 import { SearchDto } from '../shared/dto/searchDto';
-import {ConnectionTablesDto} from './dto/connectionTables.dto';
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {ConnectionResponseObject} from './response-objects/connection-response-object';
 import {ConnectionTablesResponseObject} from './response-objects/connection-tables-response-object';
 import {ConnectionsCountResponseObject} from './response-objects/connections-count-response-object';
-import { CheckConnectionDto } from './dto/checkConnection.dto';
 import { ConnectionRelationsResponseObject } from './response-objects/connection-relations-response-object';
+import { IdDto } from '../shared/dto/id.dto';
 
 @ApiUseTags('connections')
 @Controller('connections')
@@ -46,7 +45,7 @@ export class ConnectionsController {
   @ApiOkResponse({ type: [ConnectionTablesResponseObject] })
   @UseGuards(AuthGuard('admin'))
   @Get(':id/tables')
-  getDescription(@Param() { id }: ConnectionTablesDto) {
+  getDescription(@Param() { id }: IdDto) {
     return this.connectionsService.getConnectionTables(id);
   }
 
@@ -54,7 +53,7 @@ export class ConnectionsController {
   @ApiOkResponse({ type: [ConnectionRelationsResponseObject] })
   @UseGuards(AuthGuard('admin'))
   @Get(':id/relations')
-  getRelations(@Param() { id }: ConnectionTablesDto) {
+  getRelations(@Param() { id }: IdDto) {
     return this.connectionsService.getConnectionRelations(id);
   }
 
@@ -62,7 +61,7 @@ export class ConnectionsController {
   @ApiOkResponse({type: []})
   @UseGuards(AuthGuard('user'))
   @Get(':id/check')
-  checkIfReachable(@Param() { id }: CheckConnectionDto) {
+  checkIfReachable(@Param() { id }: IdDto) {
     return this.connectionsService.isReachable(id);
   }
 }

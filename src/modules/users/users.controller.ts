@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Request, UseGuards, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, UseGuards, Query, Put, Delete, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
 import { SearchDto } from '../shared/dto/searchDto';
@@ -7,6 +7,7 @@ import { NewPasswordDto } from './dto/newPassword.dto';
 import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {UserResponseObject} from './response-objects/user-response-object';
 import {UserCountResponseObject} from './response-objects/user-count-response-object';
+import { IdDto } from '../shared/dto/id.dto';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -21,6 +22,13 @@ export class UsersController {
   @Post()
   create(@Body() createDto: CreateDto, @Request() req) {
     return this.usersService.create(createDto, req.user.id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('admin'))
+  @Delete(':id')
+  delete(@Param() { id }: IdDto, @Request() req) {
+    return this.usersService.deleteUser(id);
   }
 
   @ApiBearerAuth()

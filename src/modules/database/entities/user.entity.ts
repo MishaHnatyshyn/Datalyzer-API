@@ -31,7 +31,7 @@ export default class Users extends BaseEntity {
   @Column({nullable: true, unique: false})
   created_by_id: number;
 
-  @ManyToOne(type => Users)
+  @ManyToOne(type => Users, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'created_by_id'})
   created_by: Users;
 

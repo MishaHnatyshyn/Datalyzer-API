@@ -4,12 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne, OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import DataModel from './data-model.entity';
-import DataModelItemField from './data-model-item-field.entity';
 
 @Entity()
 export default class DataModelItem extends BaseEntity {

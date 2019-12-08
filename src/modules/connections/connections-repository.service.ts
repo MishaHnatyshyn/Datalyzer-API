@@ -3,7 +3,7 @@ import {CONNECTION_REPOSITORY} from '../../constants';
 import {Repository} from 'typeorm';
 import Connection from '../database/entities/connection.entity';
 import {ConnectionData, DatabaseType} from './connections.interfaces';
-import BaseRepositoryService from '../../base/baseRepositoryService';
+import BaseRepositoryService from '../../base/baseRepository.service';
 import {searchQuery} from '../../base/utils';
 
 @Injectable()

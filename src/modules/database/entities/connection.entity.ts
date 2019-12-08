@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import ConnectionType from './connectionType.entity';
 import Users from './user.entity';
+import DataModel from './data-model.entity';
 
 @Entity()
 export default class Connection extends BaseEntity {
@@ -43,7 +44,7 @@ export default class Connection extends BaseEntity {
   @JoinColumn({name: 'type_id'})
   type: ConnectionType;
 
-  @ManyToOne(type => Users)
+  @ManyToOne(type => Users, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'admin_id'})
   admin: ConnectionType;
 
