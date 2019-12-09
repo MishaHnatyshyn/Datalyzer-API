@@ -33,4 +33,8 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
   delete(matcher: object) {
     return this.repository.delete(matcher);
   }
+
+  update(matcher: number | object, updateData: object) {
+    return this.repository.update(matcher, updateData);
+  }
 }
