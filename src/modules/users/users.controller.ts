@@ -9,6 +9,7 @@ import {UserResponseObject} from './response-objects/user-response-object';
 import {UserCountResponseObject} from './response-objects/user-count-response-object';
 import { IdDto } from '../shared/dto/id.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
+import { QueryDto } from './dto/query.dto';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -45,8 +46,8 @@ export class UsersController {
   @ApiOkResponse({ type: UserCountResponseObject })
   @UseGuards(AuthGuard('admin'))
   @Get('count')
-  getCount(@Request() { user }) {
-    return this.usersService.getUsersCount(user.id);
+  getCount(@Query() { search }: QueryDto, @Request() { user }) {
+    return this.usersService.getUsersCount(user.id, search);
   }
 
   @ApiBearerAuth()
