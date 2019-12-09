@@ -35,14 +35,6 @@ export class UsersController {
     return this.usersService.deleteUser(id);
   }
 
-  @ApiOkResponse({ type: UserResponseObject })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('admin'))
-  @Put(':id')
-  update(@Param() { id }: IdDto, @Body() data: UpdateUserDto) {
-    return this.usersService.updateUser(id, data);
-  }
-
   @ApiBearerAuth()
   @ApiOkResponse({ type: [UserResponseObject] })
   @UseGuards(AuthGuard('admin'))
@@ -81,5 +73,13 @@ export class UsersController {
   @Put('/change-password')
   changePassword(@Body() newPasswordDto: NewPasswordDto, @Request() { user }) {
     return this.usersService.changePassword(newPasswordDto, user.id);
+  }
+
+  @ApiOkResponse({ type: UserResponseObject })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('admin'))
+  @Put(':id')
+  update(@Param() { id }: IdDto, @Body() data: UpdateUserDto) {
+    return this.usersService.updateUser(id, data);
   }
 }
