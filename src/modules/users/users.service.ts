@@ -111,8 +111,11 @@ export class UsersService extends BaseRepositoryService<User> {
     return !!type;
   }
 
-  async getUsersCount(admin: number) {
-    const count = await super.getCount({ created_by_id: admin });
+  async getUsersCount(admin: number, search?: string) {
+    const count = await super.getCount({
+      created_by_id: admin,
+      username: searchQuery(search),
+    });
     return { count };
   }
 
