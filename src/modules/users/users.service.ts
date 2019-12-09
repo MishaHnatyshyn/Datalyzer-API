@@ -8,6 +8,7 @@ import {BcryptService} from '../../base/bcrypt.service';
 import UserType from '../database/entities/userType.entity';
 import { NewPasswordDto } from './dto/newPassword.dto';
 import {searchQuery} from '../../base/utils';
+import UpdateUserDto from './dto/updateUser.dto';
 
 @Injectable()
 export class UsersService extends BaseRepositoryService<User> {
@@ -21,24 +22,41 @@ export class UsersService extends BaseRepositoryService<User> {
     super(userRepository);
   }
 
-  async create(user: CreateUserDto, adminId: number): Promise<User> {
-    const newUser = new User();
-    const isUsernameNotUniq = await this.getByUserName(user.username);
+  async updateUser(id: number, data: UpdateUserDto) {
+    const { user_type_id, username } = data;
+    if (user_type_id) {
+      await this.checkUserTypeExistence(user_type_id);
+    }
+    if (username) {
+      await this.checkUsernameUniqueness(username);
+    }
+    await this.userRepository.update(id, data);
+    return this.userRepository.findOne(id);
+  }
+
+  private async checkUsernameUniqueness(username: string) {
+    const isUsernameNotUniq = await this.getByUserName(username);
     if (isUsernameNotUniq) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'User with such username already exists.',
       }, HttpStatus.BAD_REQUEST);
     }
-
-    const doesUserTypeExist = await this.checkIfUserTypeExists(user.user_type_id);
-    if (!doesUserTypeExist) {
+  }
+  private async checkUserTypeExistence(typeId: number) {
+    const type = await this.userTypeRepository.findOne(typeId);
+    if (!type) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'Wrong user type id.',
       }, HttpStatus.BAD_REQUEST);
     }
+  }
 
+  async create(user: CreateUserDto, adminId: number): Promise<User> {
+    const newUser = new User();
+    await this.checkUsernameUniqueness(user.username)
+    await this.checkUserTypeExistence(user.user_type_id)
     newUser.username = user.username;
     newUser.description = user.description || '';
     newUser.password = await this.bcryptService.hashPassword(user.password);
@@ -104,11 +122,6 @@ export class UsersService extends BaseRepositoryService<User> {
       .getOne();
 
     return user && user.password;
-  }
-
-  async checkIfUserTypeExists(typeId: number): Promise<boolean> {
-    const type = await this.userTypeRepository.findOne(typeId);
-    return !!type;
   }
 
   async getUsersCount(admin: number, search?: string) {
