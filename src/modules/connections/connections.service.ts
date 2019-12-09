@@ -5,7 +5,7 @@ import {ConnectionsRepositoryService} from './connections-repository.service';
 import {ConnectionTypeRepositoryService} from './connection-type-repository.service';
 import {ConnectionManagerService} from './connection-manager.service';
 import {
-  ConnectionErrorMessage,
+  ConnectionErrorMessage, DatabaseType,
   FormattedRelationQueryResult,
   FormattedTableAndColumnQueryResult,
   RelationsQueryResult,
@@ -13,6 +13,7 @@ import {
 } from './connections.interfaces';
 import { formatRelationsResponse, formatTablesAndColumnsResponse } from './utils';
 import queries from '../database/queries';
+import {UpdateConnectionDto} from './dto/updateConnection.dto';
 
 @Injectable()
 export class ConnectionsService {
@@ -22,22 +23,50 @@ export class ConnectionsService {
     private connectionTypeRepository: ConnectionTypeRepositoryService,
   ) {}
 
-  async createNewConnection(data: CreateConnectionDto, admin: number): Promise<Connection> {
-    const connectionWithSameName = await this.connectionRepository.getByConnectionName(data.name);
+  async updateConnection(id: number, data: UpdateConnectionDto) {
+    if (data.name) {
+      await this.checkNameUniqueness(data.name);
+    }
+    const connection = await this.connectionRepository.getById(id);
+    const connectionTypeName = await this.getConnectionType(connection.type_id);
+
+    const connectionData = {
+      name: data.name || connection.name,
+      database: data.databaseName || connection.db_name,
+      port: data.port || connection.port,
+      host: data.host || connection.host,
+      username: data.username || connection.username,
+      password: data.password || connection.password,
+      type: connectionTypeName,
+    };
+    await this.checkIfCanEstablishConnection(connectionData);
+    await this.connectionRepository.update(id, data);
+    return this.connectionRepository.getById(id);
+  }
+
+  private async checkNameUniqueness(name: string) {
+    const connectionWithSameName = await this.connectionRepository.getByConnectionName(name);
     if (connectionWithSameName) {
       throw new HttpException({
         error: ConnectionErrorMessage.NAME_IS_NOT_UNIQ,
       }, HttpStatus.BAD_REQUEST);
     }
+  }
 
-    const connectionTypeName = await this.connectionTypeRepository.getConnectionTypeName(data.typeId);
+  private async getConnectionType(typeId: number): Promise<DatabaseType> {
+    const connectionTypeName = await this.connectionTypeRepository.getConnectionTypeName(typeId);
     if (!connectionTypeName) {
       throw new HttpException({
         error: ConnectionErrorMessage.DATABASE_TYPE_DOES_NOT_EXISTS,
       }, HttpStatus.BAD_REQUEST);
     }
+    return connectionTypeName;
+  }
 
-    const isDatabaseReachable = await ConnectionManagerService.isReachable({
+  async createNewConnection(data: CreateConnectionDto, admin: number): Promise<Connection> {
+    await this.checkNameUniqueness(data.name);
+    const connectionTypeName = await this.getConnectionType(data.typeId);
+    const connectionData = {
       name: data.name,
       database: data.databaseName,
       port: data.port,
@@ -45,15 +74,18 @@ export class ConnectionsService {
       username: data.username,
       password: data.password,
       type: connectionTypeName,
-    });
+    };
+    await this.checkIfCanEstablishConnection(connectionData);
+    return this.connectionRepository.create({ ...data, adminId: admin});
+  }
 
+  private async checkIfCanEstablishConnection(data) {
+    const isDatabaseReachable = await ConnectionManagerService.isReachable(data);
     if (!isDatabaseReachable) {
       throw new HttpException({
         error: ConnectionErrorMessage.CANNOT_ESTABLISH_CONNECTION,
       }, HttpStatus.BAD_REQUEST);
     }
-
-    return this.connectionRepository.create({ ...data, adminId: admin});
   }
 
   getConnectionsList(page: number, itemsPerPage: number, search: string, admin: number) {
