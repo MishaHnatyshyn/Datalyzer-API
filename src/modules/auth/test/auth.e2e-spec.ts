@@ -8,7 +8,7 @@ jest.setTimeout(30000);
 describe('Auth e2e ', () => {
   let app: INestApplication;
   let token = '';
-  const { TEST_USER, TEST_USER_PASSWORD } = process.env;
+  const { TEST_ADMIN, TEST_ADMIN_PASSWORD } = process.env;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -23,7 +23,7 @@ describe('Auth e2e ', () => {
   it(`Should validate user credits and return jwt token`, async () => {
     return request(app.getHttpServer())
       .post('/auth/login')
-      .send({username: TEST_USER, password: TEST_USER_PASSWORD})
+      .send({username: TEST_ADMIN, password: TEST_ADMIN_PASSWORD})
       .expect(201).then((res) => {
         token = res.body.access_token;
         expect(token).toBeDefined();
