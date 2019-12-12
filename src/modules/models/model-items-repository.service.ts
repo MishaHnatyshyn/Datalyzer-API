@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import BaseRepositoryService from '../../base/baseRepositoryService';
+import BaseRepositoryService from '../../base/baseRepository.service';
 import { MODEL_ITEM_REPOSITORY } from '../../constants';
 import { Repository } from 'typeorm';
 import DataModelItem from '../database/entities/data-model-item.entity';
@@ -14,7 +14,7 @@ export class ModelItemsRepositoryService extends BaseRepositoryService<DataModel
   }
 
   createModelItem(name, tableName, modelId, connectionManager) {
-    const modelItem = new DataModelItem()
+    const modelItem = new DataModelItem();
     modelItem.model_id = modelId;
     modelItem.name = name;
     modelItem.table_name = tableName;

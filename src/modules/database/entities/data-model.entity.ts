@@ -3,12 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity, JoinColumn,
-  ManyToOne, OneToOne,
+  ManyToOne, OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import User from './user.entity';
 import Connection from './connection.entity';
+import DataModelItem from './data-model-item.entity';
 
 @Entity()
 export default class DataModel extends BaseEntity {
@@ -27,11 +28,11 @@ export default class DataModel extends BaseEntity {
   @Column({ type: 'boolean', default: true, nullable: true })
   active: boolean;
 
-  @ManyToOne(type => Connection)
+  @ManyToOne(type => Connection, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'db_connection_id'})
   db_connection: Connection;
 
-  @ManyToOne(type => User)
+  @ManyToOne(type => User, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'admin_id'})
   admin: User;
 

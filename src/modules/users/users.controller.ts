@@ -1,12 +1,16 @@
-import { Controller, Get, Post, Body, Request, UseGuards, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, UseGuards, Query, Put, Delete, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateDto from './dto/create.dto';
-import { UserListDto } from './dto/userList.dto';
+import { SearchDto } from '../shared/dto/searchDto';
 import { AuthGuard } from '@nestjs/passport';
 import { NewPasswordDto } from './dto/newPassword.dto';
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiResponse, ApiUseTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
 import {UserResponseObject} from './response-objects/user-response-object';
 import {UserCountResponseObject} from './response-objects/user-count-response-object';
+import { IdDto } from '../shared/dto/id.dto';
+import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
+import { QueryDto } from './dto/query.dto';
+import UpdateUserDto from './dto/updateUser.dto';
 
 @ApiUseTags('users')
 @Controller('users')
@@ -23,20 +27,28 @@ export class UsersController {
     return this.usersService.create(createDto, req.user.id);
   }
 
+  @ApiOkResponse({ type: DeleteResponseObject })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('admin'))
+  @Delete(':id')
+  delete(@Param() { id }: IdDto, @Request() req) {
+    return this.usersService.deleteUser(id);
+  }
+
   @ApiBearerAuth()
   @ApiOkResponse({ type: [UserResponseObject] })
   @UseGuards(AuthGuard('admin'))
   @Get()
-  findAll(@Query() { page, itemsPerPage }: UserListDto, @Request() req) {
-    return this.usersService.getUserList(page, itemsPerPage, req.user.id);
+  findAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() req) {
+    return this.usersService.getUserList(page, itemsPerPage, search, req.user.id);
   }
 
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserCountResponseObject })
   @UseGuards(AuthGuard('admin'))
   @Get('count')
-  getCount(@Request() { user }) {
-    return this.usersService.getUsersCount(user.id);
+  getCount(@Query() { search }: QueryDto, @Request() { user }) {
+    return this.usersService.getUsersCount(user.id, search);
   }
 
   @ApiBearerAuth()
@@ -61,5 +73,13 @@ export class UsersController {
   @Put('/change-password')
   changePassword(@Body() newPasswordDto: NewPasswordDto, @Request() { user }) {
     return this.usersService.changePassword(newPasswordDto, user.id);
+  }
+
+  @ApiOkResponse({ type: UserResponseObject })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('admin'))
+  @Put(':id')
+  update(@Param() { id }: IdDto, @Body() data: UpdateUserDto) {
+    return this.usersService.updateUser(id, data);
   }
 }

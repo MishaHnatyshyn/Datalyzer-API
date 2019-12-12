@@ -17,9 +17,10 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
    return this.repository.findOne(options);
   }
 
-  getPaginatedList(skip: number, itemsPerPage: number, matcher?: object): Promise<Entity[]> {
+  getPaginatedList({ skip, itemsPerPage, matcher, relations = [] }): Promise<Entity[]> {
     return this.repository.find({
       where: matcher,
+      relations,
       skip,
       take: itemsPerPage,
     });
@@ -27,5 +28,13 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
 
   getCount(options: object): Promise<number> {
     return this.repository.count(options);
+  }
+
+  delete(matcher: object) {
+    return this.repository.delete(matcher);
+  }
+
+  update(matcher: number | object, updateData: object) {
+    return this.repository.update(matcher, updateData);
   }
 }

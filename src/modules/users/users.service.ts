@@ -1,12 +1,14 @@
 import {Injectable, Inject, HttpException, HttpStatus} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import User from '../database/entities/user.entity';
-import BaseRepositoryService from '../../base/baseRepositoryService';
+import BaseRepositoryService from '../../base/baseRepository.service';
 import CreateUserDto from './dto/create.dto';
 import {USER_REPOSITORY, USER_TYPE_REPOSITORY} from '../../constants';
 import {BcryptService} from '../../base/bcrypt.service';
 import UserType from '../database/entities/userType.entity';
 import { NewPasswordDto } from './dto/newPassword.dto';
+import {searchQuery} from '../../base/utils';
+import UpdateUserDto from './dto/updateUser.dto';
 
 @Injectable()
 export class UsersService extends BaseRepositoryService<User> {
@@ -20,24 +22,41 @@ export class UsersService extends BaseRepositoryService<User> {
     super(userRepository);
   }
 
-  async create(user: CreateUserDto, adminId: number): Promise<User> {
-    const newUser = new User();
-    const isUsernameNotUniq = await this.getByUserName(user.username);
+  async updateUser(id: number, data: UpdateUserDto) {
+    const { user_type_id, username } = data;
+    if (user_type_id) {
+      await this.checkUserTypeExistence(user_type_id);
+    }
+    if (username) {
+      await this.checkUsernameUniqueness(username);
+    }
+    await this.userRepository.update(id, data);
+    return this.userRepository.findOne(id);
+  }
+
+  private async checkUsernameUniqueness(username: string) {
+    const isUsernameNotUniq = await this.getByUserName(username);
     if (isUsernameNotUniq) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'User with such username already exists.',
       }, HttpStatus.BAD_REQUEST);
     }
-
-    const doesUserTypeExist = await this.checkIfUserTypeExists(user.user_type_id);
-    if (!doesUserTypeExist) {
+  }
+  private async checkUserTypeExistence(typeId: number) {
+    const type = await this.userTypeRepository.findOne(typeId);
+    if (!type) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,
         error: 'Wrong user type id.',
       }, HttpStatus.BAD_REQUEST);
     }
+  }
 
+  async create(user: CreateUserDto, adminId: number): Promise<User> {
+    const newUser = new User();
+    await this.checkUsernameUniqueness(user.username)
+    await this.checkUserTypeExistence(user.user_type_id)
     newUser.username = user.username;
     newUser.description = user.description || '';
     newUser.password = await this.bcryptService.hashPassword(user.password);
@@ -57,9 +76,9 @@ export class UsersService extends BaseRepositoryService<User> {
     });
   }
 
-  getUserList(page: number, itemsPerPage: number, admin: number): Promise<User[]> {
+  getUserList(page: number, itemsPerPage: number, search: string, admin: number): Promise<User[]> {
     const skip = (page - 1) * itemsPerPage;
-    return super.getPaginatedList(skip, itemsPerPage, { created_by_id: admin });
+    return super.getPaginatedList({ skip, itemsPerPage, matcher: { created_by_id: admin, username: searchQuery(search) } });
   }
 
   getUsersByType(type: string): Promise<User[]> {
@@ -105,13 +124,11 @@ export class UsersService extends BaseRepositoryService<User> {
     return user && user.password;
   }
 
-  async checkIfUserTypeExists(typeId: number): Promise<boolean> {
-    const type = await this.userTypeRepository.findOne(typeId);
-    return !!type;
-  }
-
-  async getUsersCount(admin: number) {
-    const count = await super.getCount({ created_by_id: admin });
+  async getUsersCount(admin: number, search?: string) {
+    const count = await super.getCount({
+      created_by_id: admin,
+      username: searchQuery(search),
+    });
     return { count };
   }
 
@@ -135,5 +152,9 @@ export class UsersService extends BaseRepositoryService<User> {
       {id},
       {password: newPassword},
       );
+  }
+
+  deleteUser(id: number) {
+    return this.userRepository.delete({ id });
   }
 }

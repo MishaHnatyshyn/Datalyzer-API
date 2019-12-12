@@ -3,8 +3,8 @@ import {CONNECTION_REPOSITORY} from '../../constants';
 import {Repository} from 'typeorm';
 import Connection from '../database/entities/connection.entity';
 import {ConnectionData, DatabaseType} from './connections.interfaces';
-import BaseRepositoryService from '../../base/baseRepositoryService';
-import User from '../database/entities/user.entity';
+import BaseRepositoryService from '../../base/baseRepository.service';
+import {searchQuery} from '../../base/utils';
 
 @Injectable()
 export class ConnectionsRepositoryService extends BaseRepositoryService<Connection> {
@@ -47,7 +47,7 @@ export class ConnectionsRepositoryService extends BaseRepositoryService<Connecti
     return this.connectionRepository.findOne({ name });
   }
 
-  getConnectionList(skip: number, itemsPerPage: number, admin: number): Promise<Connection[]> {
-    return super.getPaginatedList(skip, itemsPerPage, { admin_id: admin });
+  getConnectionList(skip: number, itemsPerPage: number, search: string, admin: number): Promise<Connection[]> {
+    return super.getPaginatedList({ skip, itemsPerPage, matcher: { admin_id: admin, name: searchQuery(search) } });
   }
 }

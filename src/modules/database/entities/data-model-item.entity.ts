@@ -24,7 +24,7 @@ export default class DataModelItem extends BaseEntity {
   @Column({ type: 'number', nullable: false })
   model_id: number;
 
-  @ManyToOne(type => DataModel)
+  @ManyToOne(type => DataModel, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'model_id'})
   model: DataModel;
 
