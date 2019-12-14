@@ -5,8 +5,12 @@ import { ModelItemsFieldRepositoryService } from './model-items-field-repository
 import { ModelItemsRelationRepositoryService } from './model-items-relation-repository.service';
 import { EntityManager, getManager, In } from 'typeorm';
 import { CreateModelDto } from './dto/createModel.dto';
-import { RelationItem } from './dto/relationItem.dto';
 import { ModelItem } from './dto/modelItem.dto';
+import {
+  createModelItemsMapForRelations,
+  formModelDataForReportResponse,
+  patchRelationsDataWithModelsId,
+} from './utils';
 
 @Injectable()
 export class ModelsService {
@@ -22,6 +26,11 @@ export class ModelsService {
     return this.modelsRepositoryService.getPaginatedModelList(skip, itemsPerPage, search, admin);
   }
 
+  async getModelsDataForReport(admin: number) {
+    const data = await this.modelsRepositoryService.getModelsListForReport(admin);
+    return formModelDataForReportResponse(data);
+  }
+
   async getModelsCount(admin: number) {
     const count = await this.modelsRepositoryService.getCount({ admin_id: admin });
     return { count };
@@ -32,8 +41,8 @@ export class ModelsService {
     const model = await this.modelsRepositoryService.createModel(name, admin, connectionId, manager);
     const { id: modelId } = model;
     const modelItems = await Promise.all(items.map(item => this.createModelItem(item, modelId, manager)));
-    const modelItemsMap = ModelsService.createModelItemsMapForRelations(modelItems);
-    const relationsWithModelsId = ModelsService.patchRelationsDataWithModelsId(modelItemsMap, relations);
+    const modelItemsMap = createModelItemsMapForRelations(modelItems);
+    const relationsWithModelsId = patchRelationsDataWithModelsId(modelItemsMap, relations);
     await Promise.all(
       relationsWithModelsId.map(relation =>
         this.modelItemsRelationRepositoryService.createRelation({ ...relation, connectionManager: manager }),
@@ -55,22 +64,6 @@ export class ModelsService {
     return await getManager().transaction(async manager => {
       return this.createModelInSingleTransaction(data, admin, manager);
     });
-  }
-
-  static patchRelationsDataWithModelsId(modelItemsMap: Map<string, number>, relations: RelationItem[]) {
-    return relations.map((relation: RelationItem) => ({
-      firstModelItemId: modelItemsMap.get(relation.firstTableName),
-      secondModelItemId: modelItemsMap.get(relation.secondTableName),
-      firstModelItemField: relation.firstTableColumn,
-      secondModelItemField: relation.secondTableColumn,
-    }));
-  }
-
-  static createModelItemsMapForRelations(modelItems): Map<string, number> {
-    return modelItems.reduce((map, curr) => {
-      map.set(curr.table_name, curr.id);
-      return map;
-    }, new Map());
   }
 
   async createModelItem(modelItemData: ModelItem, modelId: number, connectionManager: EntityManager) {
