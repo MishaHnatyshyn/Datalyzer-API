@@ -10,6 +10,7 @@ describe('DashboardService', () => {
     createDashboard: jest.fn(),
     delete: jest.fn(),
     getPaginatedList: jest.fn(),
+    findById: jest.fn(),
   };
   const mockDashboardId = 1;
   const mockUser = 1;
@@ -51,6 +52,7 @@ describe('DashboardService', () => {
       const matcher = { id: mockDashboardId, user_id: mockUser };
       await service.changeDashboardName(mockDashboardId, name, mockUser);
       expect(dashboardRepositoryServiceMock.update).toBeCalledWith(matcher, { name });
+      expect(dashboardRepositoryServiceMock.findById).toBeCalledWith(mockDashboardId);
     });
   });
 
