@@ -6,6 +6,9 @@ import { ModelItemsFieldRepositoryService } from '../model-items-field-repositor
 import { ModelItemsRelationRepositoryService } from '../model-items-relation-repository.service';
 import { RelationItem } from '../dto/relationItem.dto';
 import { EntityManager } from 'typeorm';
+import * as utils from '../utils';
+
+jest.mock('../utils')
 
 describe('ModelsService', () => {
   let service: ModelsService;
@@ -28,12 +31,7 @@ describe('ModelsService', () => {
     { firstTableName: 'tableName1', secondTableName: 'tableName2', firstTableColumn: '', secondTableColumn: '' },
     { firstTableName: 'tableName3', secondTableName: 'tableName4', firstTableColumn: '', secondTableColumn: '' },
   ];
-  const originalPatchRelationsDataWithModelsId = ModelsService.patchRelationsDataWithModelsId;
-  const originalCreateModelItemsMapForRelations = ModelsService.createModelItemsMapForRelations;
-
   beforeEach(async () => {
-    ModelsService.patchRelationsDataWithModelsId = originalPatchRelationsDataWithModelsId;
-    ModelsService.createModelItemsMapForRelations = originalCreateModelItemsMapForRelations;
     page = 1;
     itemsPerPage = 10;
     search = 'search';
@@ -122,8 +120,11 @@ describe('ModelsService', () => {
       service.createModelItem = jest.fn()
         .mockReturnValueOnce(mockModelItems[0])
         .mockReturnValue(mockModelItems[1]);
-      ModelsService.createModelItemsMapForRelations = jest.fn().mockReturnValue(mockModelItemsMap);
-      ModelsService.patchRelationsDataWithModelsId = jest.fn().mockReturnValue(mockRelationItems);
+      // @ts-ignore
+      utils.createModelItemsMapForRelations.mockReturnValue(mockModelItemsMap);
+
+      // @ts-ignore
+      utils.patchRelationsDataWithModelsId.mockReturnValue(mockRelationItems);
       mockModelItemsRelationsRepositoryService.createRelation = jest.fn().mockReturnValue({});
       const expectedResult = {
         id: mockModel.id,
@@ -139,8 +140,8 @@ describe('ModelsService', () => {
       const result = await service.createModelInSingleTransaction(data, admin, manager);
       expect(mockModelsRepositoryService.createModel).toBeCalledWith(name, admin, connectionId, manager);
 
-      expect(ModelsService.createModelItemsMapForRelations).toBeCalledWith(mockModelItems);
-      expect(ModelsService.patchRelationsDataWithModelsId).toBeCalledWith(mockModelItemsMap, relations);
+      expect(utils.createModelItemsMapForRelations).toBeCalledWith(mockModelItems);
+      expect(utils.patchRelationsDataWithModelsId).toBeCalledWith(mockModelItemsMap, relations);
 
       expect(mockModelItemsRelationsRepositoryService.createRelation)
         .toBeCalledWith({ ...mockRelationItems[0], connectionManager: manager });
@@ -150,28 +151,6 @@ describe('ModelsService', () => {
 
       expect(result).toStrictEqual(expectedResult);
     });
-  });
-
-  describe('patchRelationsDataWithModelsId', () => {
-    it('should format data properly', () => {
-      const expectedData = [
-        { firstModelItemId: 1, secondModelItemId: 2, firstModelItemField: '', secondModelItemField: '' },
-        { firstModelItemId: 3, secondModelItemId: 4, firstModelItemField: '', secondModelItemField: '' },
-      ];
-      expect(ModelsService.patchRelationsDataWithModelsId(mockModelItemsMap, mockRelationItems)).toStrictEqual(expectedData);
-    });
-  });
-
-  describe('createModelItemsMapForRelations', () => {
-    const modelItems = [
-      { table_name: 'tableName1', id: 1 },
-      { table_name: 'tableName2', id: 2 },
-    ];
-    const expectedResult = new Map([
-      ['tableName1', 1],
-      ['tableName2', 2],
-    ]);
-    expect(ModelsService.createModelItemsMapForRelations(modelItems)).toStrictEqual(expectedResult);
   });
 
   describe('createModelItem', () => {
