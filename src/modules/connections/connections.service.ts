@@ -119,7 +119,7 @@ export class ConnectionsService {
     }
   }
 
-  private async execRawQuery<T>(id: number, query: object): Promise<T> {
+  async execRawQuery<T>(id: number, query: object): Promise<T> {
     const [ connection, connectionDescription ] = await Promise.all([
       this.connectionManager.getConnection(id),
       this.connectionRepository.getDataForConnectionCreating(id),

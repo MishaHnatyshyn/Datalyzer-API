@@ -14,6 +14,10 @@ export class ModelItemsFieldRepositoryService extends BaseRepositoryService<Data
     super(modelItemFieldRepository);
   }
 
+  findOneById(id: number) {
+   return this.modelItemFieldRepository.findOne(id, { relations: [ 'model_item' ] });
+  }
+
   private formModelItemFieldEntity({ originalName, givenName, type, modelItemId }) {
     const modelItemField = new DataModelItemField();
     modelItemField.given_name = givenName;

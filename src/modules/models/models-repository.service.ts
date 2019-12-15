@@ -24,25 +24,25 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
     return connectionManager ? connectionManager.save(model) : this.modelRepository.create(model);
   }
 
-  getPaginatedModelList(skip: number, itemsPerPage: number, search: string, admin: number) {
-    return this.modelRepository
-      .createQueryBuilder('model')
-      .select([
-        'model.name AS name',
-        'model.id AS id',
-        'model.created_at AS created',
-        'model.active AS active',
-        'connection.name AS connection',
-        'COUNT(table.id) AS tables',
-        'COUNT(field.id) AS fields',
-      ])
-      .where({ admin_id: admin, name: searchQuery(search) })
-      .innerJoin('model.db_connection', 'connection')
-      .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
-      .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
-      .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
-      .skip(skip)
-      .limit(itemsPerPage)
-      .getRawMany();
-  }
+    getPaginatedModelList(skip: number, itemsPerPage: number, search: string, admin: number) {
+      return this.modelRepository
+        .createQueryBuilder('model')
+        .select([
+          'model.name AS name',
+          'model.id AS id',
+          'model.created_at AS created',
+          'model.active AS active',
+          'connection.name AS connection',
+          'COUNT(table.id) AS tables',
+          'COUNT(field.id) AS fields',
+        ])
+        .where({ admin_id: admin, name: searchQuery(search) })
+        .innerJoin('model.db_connection', 'connection')
+        .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
+        .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
+        .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
+        .skip(skip)
+        .limit(itemsPerPage)
+        .getRawMany();
+    }
 }
