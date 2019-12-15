@@ -36,6 +36,9 @@ export default class DataModel extends BaseEntity {
   @JoinColumn({name: 'admin_id'})
   admin: User;
 
+  @OneToMany(type => DataModelItem, item => item.model)
+  modelItems: DataModelItem[];
+
   @CreateDateColumn()
   created_at: string;
 

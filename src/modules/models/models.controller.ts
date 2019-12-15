@@ -11,6 +11,7 @@ import { DeleteResponseObject } from '../shared/response-objects/delete.response
 import { GetModelFieldValuesDto } from './dto/getModelFieldValues.dto';
 import { ModelItemsFieldService } from './model-items-field-.service';
 import { ModelDataItemFieldResponseObject } from './response-objects/model-data-item-field-response-object';
+import ModelForReportResponseObject from './response-objects/model-for-report.response-object';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -24,6 +25,14 @@ export class ModelsController {
   @Get()
   getAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() { user }) {
     return this.modelsService.getModelsList(page, itemsPerPage, search, user.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [ModelForReportResponseObject] })
+  @UseGuards(AuthGuard('user'))
+  @Get('report')
+  getModelsForReport(@Request() { user }) {
+    return this.modelsService.getModelsDataForReport(user.created_by_id);
   }
 
   @ApiBearerAuth()

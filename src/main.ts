@@ -24,6 +24,7 @@ async function bootstrap() {
     .addTag('auth')
     .addTag('connections')
     .addTag('models')
+    .addTag('dashboards')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
