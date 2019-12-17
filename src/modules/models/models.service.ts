@@ -82,4 +82,17 @@ export class ModelsService {
   async deleteModel(id: number) {
     return this.modelsRepositoryService.delete({ id });
   }
+
+  getRelationData(firstId, secondId) {
+    return this.modelItemsRelationRepositoryService.getRelationByModelItems(firstId, secondId);
+  }
+
+  getModelItemsFieldsData(ids: number[]) {
+    return this.modelItemsFieldRepositoryService.getModelItemsFieldsData(ids);
+  }
+
+  async getConnectionIdByModelItemFieldId(id) {
+    const data = await this.modelItemsFieldRepositoryService.getConnectionIdByModelItemFieldId(id);
+    return data.id;
+  }
 }
