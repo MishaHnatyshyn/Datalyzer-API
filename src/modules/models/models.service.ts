@@ -3,7 +3,7 @@ import { ModelsRepositoryService } from './models-repository.service';
 import { ModelItemsRepositoryService } from './model-items-repository.service';
 import { ModelItemsFieldRepositoryService } from './model-items-field-repository.service';
 import { ModelItemsRelationRepositoryService } from './model-items-relation-repository.service';
-import { EntityManager, getManager, In } from 'typeorm';
+import { EntityManager, getManager } from 'typeorm';
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelItem } from './dto/modelItem.dto';
 import {
