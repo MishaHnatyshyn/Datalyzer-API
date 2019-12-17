@@ -34,15 +34,7 @@ const dataBaseRelationsQuery = {
     kcu.table_name;`,
 };
 
-const modelItemsFieldValuesQuery = ({ tableName, fields }) => {
-  return {
-    postgres: `
-      SELECT ${fields.toString()} from ${tableName};`,
-  };
-};
-
 export default {
   dataBaseSelectTablesAndColumnsQuery,
   dataBaseRelationsQuery,
-  modelItemsFieldValuesQuery,
 };

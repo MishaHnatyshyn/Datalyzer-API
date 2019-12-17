@@ -25,16 +25,18 @@ export class ReportsService {
         second_model_item_relation_field: secondTableRelField,
         first_model_item_id: firstModelItemRelId,
         second_model_item_id: secondModelItemRelId,
-      } = await this.modelsService
-        .getRelationData(firstItem.model_item.id, secondItem.model_item.id);
+      } = await this.modelsService.getRelationData(firstItem.model_item.id, secondItem.model_item.id);
+
       const {
         original_name: fName,
         model_item: { table_name: fTable},
       } = firstModelItemRelId === firstItem.model_item.id ? firstItem : secondItem;
+
       const {
         original_name: sName,
         model_item: { table_name: sTable},
       } = secondModelItemRelId === secondItem.model_item.id ? secondItem : firstItem;
+
       queryBuilder
         .select([
           `"table".${fName} as ${fName}`,
