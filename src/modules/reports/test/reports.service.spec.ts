@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ReportsService } from '../reports.service';
 import { ModelsService } from '../../models/models.service';
 import { ConnectionManagerService } from '../../connections/connection-manager.service';
+import { ReportsRepositoryService } from '../reports-repository.service';
 
 describe('ReportsService', () => {
   let service: ReportsService;
@@ -10,6 +11,7 @@ describe('ReportsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         { provide: ModelsService, useValue: {} },
+        { provide: ReportsRepositoryService, useValue: {} },
         { provide: ConnectionManagerService, useValue: {} },
         ReportsService,
       ],
