@@ -8,9 +8,6 @@ import { ModelDetailsResponseObject } from './response-objects/model-details-res
 import {SearchDto} from '../shared/dto/searchDto';
 import { IdDto } from '../shared/dto/id.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
-import { GetModelFieldValuesDto } from './dto/getModelFieldValues.dto';
-import { ModelItemsFieldService } from './model-items-field-.service';
-import { ModelDataItemFieldResponseObject } from './response-objects/model-data-item-field-response-object';
 import ModelForReportResponseObject from './response-objects/model-for-report.response-object';
 
 @ApiUseTags('models')
@@ -18,7 +15,6 @@ import ModelForReportResponseObject from './response-objects/model-for-report.re
 export class ModelsController {
   constructor(
     private modelsService: ModelsService,
-    private modelItemsFieldService: ModelItemsFieldService,
   ) {}
 
   @UseGuards(AuthGuard('admin'))
@@ -57,13 +53,5 @@ export class ModelsController {
   @Post()
   create(@Body() data: CreateModelDto, @Request() { user }) {
     return this.modelsService.createModel(data, user.id);
-  }
-
-  @ApiCreatedResponse({ type: [ModelDataItemFieldResponseObject]})
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('user'))
-  @Get('/fieldValues')
-  getModelItemFieldValues(@Query() data: GetModelFieldValuesDto) {
-    return this.modelItemsFieldService.getFieldValues(data);
   }
 }
