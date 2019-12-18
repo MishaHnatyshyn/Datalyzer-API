@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class DashboardRepositoryService extends BaseRepositoryService<Dashboard> {
-
   constructor(
     @Inject(DASHBOARD_REPOSITORY)
     private readonly dashboardRepository: Repository<Dashboard>,
@@ -19,5 +18,12 @@ export class DashboardRepositoryService extends BaseRepositoryService<Dashboard>
     dashboard.name = name;
     dashboard.user_id = user;
     return this.dashboardRepository.save(dashboard);
+  }
+
+  getDashboardDetails(dashboard: number, user: number) {
+    return this.dashboardRepository.find({
+      where: { id: dashboard, user_id: user },
+      relations: ['reports'],
+    });
   }
 }

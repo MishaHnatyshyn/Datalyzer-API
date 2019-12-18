@@ -7,11 +7,20 @@ import { IdDto } from '../shared/dto/id.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 import { DashboardResponseObject } from './response-objects/dashboard.response-object';
 import { DashboardCreateDto } from './dto/dashboardCreate.dto';
+import { DashboardDetailsResponseObject } from './response-objects/dashboard-details.response-object';
 
 @ApiUseTags('dashboards')
 @Controller('dashboards')
 export class DashboardController {
   constructor(private dashboardService: DashboardService) {}
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: DashboardDetailsResponseObject })
+  @UseGuards(AuthGuard('user'))
+  @Get(':id')
+  getOne(@Param() { id }: IdDto, @Request() { user }) {
+    return this.dashboardService.getDashboardDetails(id, user.id);
+  }
 
   @ApiBearerAuth()
   @ApiOkResponse({ type: [DashboardResponseObject] })
