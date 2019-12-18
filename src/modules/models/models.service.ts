@@ -93,6 +93,6 @@ export class ModelsService {
 
   async getConnectionIdByModelItemFieldId(id) {
     const data = await this.modelItemsFieldRepositoryService.getConnectionIdByModelItemFieldId(id);
-    return data.id;
+    return data ? data.id : null;
   }
 }
