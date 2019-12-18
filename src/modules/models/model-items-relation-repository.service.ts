@@ -27,4 +27,11 @@ export class ModelItemsRelationRepositoryService extends BaseRepositoryService<D
     relation.second_model_item_relation_field = secondModelItemField;
     return connectionManager ? connectionManager.save(relation) : this.modelItemRelationRepository.save(relation);
   }
+
+  getRelationByModelItems(firstModelItemId: number, secondModelItemId: number) {
+    return this.modelItemRelationRepository.findOne({ where: [
+        { first_model_item_id: firstModelItemId, second_model_item_id: secondModelItemId },
+        { first_model_item_id: secondModelItemId, second_model_item_id: firstModelItemId },
+    ]})
+  }
 }

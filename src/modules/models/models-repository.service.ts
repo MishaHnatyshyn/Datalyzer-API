@@ -63,7 +63,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
       .where({ admin_id: creator })
       .innerJoin('model.modelItems', 'table')
       .innerJoin('table.fields', 'field')
-      .innerJoin(
+      .leftJoin(
         DataModelItemRelation,
         'relation',
         'table.id = relation.second_model_item_id OR table.id = relation.first_model_item_id',

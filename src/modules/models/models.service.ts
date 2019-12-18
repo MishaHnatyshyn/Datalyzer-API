@@ -3,7 +3,7 @@ import { ModelsRepositoryService } from './models-repository.service';
 import { ModelItemsRepositoryService } from './model-items-repository.service';
 import { ModelItemsFieldRepositoryService } from './model-items-field-repository.service';
 import { ModelItemsRelationRepositoryService } from './model-items-relation-repository.service';
-import { EntityManager, getManager, In } from 'typeorm';
+import { EntityManager, getManager } from 'typeorm';
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelItem } from './dto/modelItem.dto';
 import { RenameModelDto } from './dto/renameModel.dto';
@@ -83,9 +83,20 @@ export class ModelsService {
   async deleteModel(id: number) {
     return this.modelsRepositoryService.delete({ id });
   }
-
   async renameModel(data: RenameModelDto, id: number) {
     await this.modelsRepositoryService.update(id, data);
     return this.modelsRepositoryService.renameModel(id);
+  }
+  getRelationData(firstId, secondId) {
+    return this.modelItemsRelationRepositoryService.getRelationByModelItems(firstId, secondId);
+  }
+
+  getModelItemsFieldsData(ids: number[]) {
+    return this.modelItemsFieldRepositoryService.getModelItemsFieldsData(ids);
+  }
+
+  async getConnectionIdByModelItemFieldId(id) {
+    const data = await this.modelItemsFieldRepositoryService.getConnectionIdByModelItemFieldId(id);
+    return data.id;
   }
 }

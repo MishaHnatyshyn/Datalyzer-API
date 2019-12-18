@@ -4,11 +4,12 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
+  ManyToOne, OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import Users from './user.entity';
+import Report from './report.entity';
 
 @Entity()
 export default class Dashboard extends BaseEntity {
@@ -24,6 +25,9 @@ export default class Dashboard extends BaseEntity {
   @ManyToOne(type => Users, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'user_id'})
   user: Users;
+
+  @OneToMany(type => Report, report => report.dashboard)
+  reports: Report[];
 
   @CreateDateColumn()
   created_at: string;
