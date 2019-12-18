@@ -24,7 +24,7 @@ export const formModel = ({model_id, model_name}) => ({
 export const formModelItem = ({table_id, table_name, relation_id}) => ({
   id: table_id,
   name: table_name,
-  relations: [relation_id],
+  relations: relation_id ? [relation_id] : [],
 });
 
 export const formModelItemField = ({field_id, field_given_name, field_type}) => ({
@@ -44,7 +44,7 @@ export const formModelDataForReportResponse = (data) => data.reduce((acc, curr) 
     const table = model.items.find(_ => _.id === curr.table_id);
     if (table) {
       const relation = table.relations.find(_ => _ === curr.relation_id);
-      if (!relation) {
+      if (!relation && curr.relation_id) {
         table.relations.push(curr.relation_id);
       }
       table.fields.push(formModelItemField(curr));
