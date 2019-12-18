@@ -70,4 +70,23 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
       )
       .getRawMany();
   }
+  renameModel(id) {
+    return this.modelRepository
+      .createQueryBuilder('model')
+      .select([
+        'model.name AS name',
+        'model.id AS id',
+        'model.created_at AS created',
+        'model.active AS active',
+        'connection.name AS connection',
+        'COUNT(table.id) AS tables',
+        'COUNT(field.id) AS fields',
+      ])
+      .where({ id })
+      .innerJoin('model.db_connection', 'connection')
+      .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
+      .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
+      .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
+      .getRawMany();
+  }
 }
