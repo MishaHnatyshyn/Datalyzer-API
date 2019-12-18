@@ -10,11 +10,20 @@ import { UpdateReportDto } from './dto/updateReport.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 import { ReportResponseObject } from './response-objects/report.response-object';
 import { ReportUpdateResponseObject } from './response-objects/report-update.response-object';
+import { ReportDataResponseObject } from './response-objects/report-data.response-object';
 
 @ApiUseTags('reports')
 @Controller('reports')
 export class ReportsController {
   constructor(private reportsService: ReportsService) {}
+
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: ReportDataResponseObject })
+  @UseGuards(AuthGuard('user'))
+  @Get(':id')
+  getReport(@Param() { id }: IdDto) {
+    return this.reportsService.getReportData(id);
+  }
 
   @ApiCreatedResponse({ type: [ModelDataItemFieldResponseObject]})
   @ApiBearerAuth()

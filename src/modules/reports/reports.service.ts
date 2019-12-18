@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConnectionManagerService } from '../connections/connection-manager.service';
 import { ModelsService } from '../models/models.service';
 import { ReportsRepositoryService } from './reports-repository.service';
 import { UpdateReportDto } from './dto/updateReport.dto';
 import { CreateReportDto } from './dto/createReport.dto';
-import { EntityManager, getManager } from 'typeorm';
+import { getManager } from 'typeorm';
+import { separateFactsAndDimensionFields } from './utils';
 
 @Injectable()
 export class ReportsService {
@@ -14,10 +15,30 @@ export class ReportsService {
     private reportsRepositoryService: ReportsRepositoryService,
   ) {}
 
+  async getReportData(id: number) {
+    const report = await this.reportsRepositoryService.findById(id, {
+      relations: ['report_items', 'report_items.model_item_field'],
+    });
+    const { report_items: items } = report;
+    const itemsData = await this.getFieldValues(items.map(_ => _.model_item_field_id));
+    const { facts, dimensions } = separateFactsAndDimensionFields(items);
+    return {
+      ...report,
+      report_items: itemsData,
+      facts,
+      dimensions,
+    };
+  }
+
   async getFieldValues(data: number[]) {
     const fields = await this.modelsService.getModelItemsFieldsData(data);
     const [firstItem, secondItem] = fields;
     const connectionId = await this.modelsService.getConnectionIdByModelItemFieldId(firstItem.id);
+    if (!connectionId) {
+      throw new HttpException({
+        error: 'Error with connection',
+      }, HttpStatus.BAD_REQUEST);
+    }
     const connection = await this.connectionManager.getConnection(connectionId);
     const queryBuilder = connection.createQueryBuilder();
     if (firstItem.model_item.id === secondItem.model_item.id) {
@@ -31,17 +52,19 @@ export class ReportsService {
       } = await this.modelsService.getRelationData(firstItem.model_item.id, secondItem.model_item.id);
 
       const {
+        given_name: fNameGiven,
         original_name: fName,
         model_item: { table_name: fTable },
       } = firstModelItemRelId === firstItem.model_item.id ? firstItem : secondItem;
 
       const {
+        given_name: sNameGiven,
         original_name: sName,
         model_item: { table_name: sTable },
       } = secondModelItemRelId === secondItem.model_item.id ? secondItem : firstItem;
 
       queryBuilder
-        .select([`"table".${fName} as ${fName}`, `"secondTable".${sName} as ${sName}`])
+        .select([`"table".${fName} as ${fNameGiven}`, `"secondTable".${sName} as ${sNameGiven}`])
         .from(fTable, 'table')
         .innerJoin(sTable, 'secondTable', `"table".${firstTableRelField} = "secondTable".${secondTableRelField}`);
     }
