@@ -21,7 +21,7 @@ export class DashboardRepositoryService extends BaseRepositoryService<Dashboard>
   }
 
   getDashboardDetails(dashboard: number, user: number) {
-    return this.dashboardRepository.find({
+    return this.dashboardRepository.findOne({
       where: { id: dashboard, user_id: user },
       relations: ['reports'],
     });
