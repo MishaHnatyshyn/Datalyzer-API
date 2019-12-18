@@ -7,6 +7,10 @@ import { DashboardCreateDto } from './dto/dashboardCreate.dto';
 export class DashboardService {
   constructor(private dashboardRepositoryService: DashboardRepositoryService) {}
 
+  getDashboardDetails(dashboard: number, user: number) {
+    return this.dashboardRepositoryService.getDashboardDetails(dashboard, user);
+  }
+
   getDashboards(page, itemsPerPage, search, user) {
     const skip = (page - 1) * itemsPerPage;
     return this.dashboardRepositoryService.getPaginatedList({

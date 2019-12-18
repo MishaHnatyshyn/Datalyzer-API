@@ -38,7 +38,7 @@ export default class Report extends BaseEntity {
 
   @ManyToOne(type => Dashboard, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'dashboard_id'})
-  dashboard: User;
+  dashboard: Dashboard;
 
   @Column({ type: 'number', nullable: false })
   user_id: number;
