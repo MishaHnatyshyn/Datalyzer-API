@@ -6,11 +6,13 @@ import { UpdateReportDto } from './dto/updateReport.dto';
 import { CreateReportDto } from './dto/createReport.dto';
 import { getManager } from 'typeorm';
 import { separateFactsAndDimensionFields } from './utils';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 @Injectable()
 export class ReportsService {
   constructor(
     private modelsService: ModelsService,
+    private dashboardService: DashboardService,
     private connectionManager: ConnectionManagerService,
     private reportsRepositoryService: ReportsRepositoryService,
   ) {}
@@ -82,7 +84,12 @@ export class ReportsService {
 
   async createReport(data: CreateReportDto, user: number) {
     return getManager().transaction(async manager => {
-      const report = await this.reportsRepositoryService.createReport({ ...data, user, manager });
+      let dashboard = data.dashboard;
+      if (data.newDashboardName) {
+        const newDashboard = await this.dashboardService.createDashboard({ name: data.newDashboardName }, user);
+        dashboard = newDashboard.id;
+      }
+      const report = await this.reportsRepositoryService.createReport({ ...data, dashboard, user, manager });
       const reportItems = await Promise.all(
         data.modelItems.map((modelItemField) => (
           this.reportsRepositoryService.createReportItem({ modelItemField, report: report.id, manager })),

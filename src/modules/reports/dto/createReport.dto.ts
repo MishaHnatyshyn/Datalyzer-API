@@ -1,5 +1,5 @@
-import { IsArray, IsNumber, IsString, ArrayNotEmpty, ArrayMinSize, ArrayMaxSize } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { IsArray, IsNumber, IsString, ArrayNotEmpty, ArrayMinSize, ArrayMaxSize, IsOptional } from 'class-validator';
+import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 
 export class CreateReportDto {
   @ApiModelProperty()
@@ -9,6 +9,11 @@ export class CreateReportDto {
   @ApiModelProperty()
   @IsNumber()
   readonly dashboard: number;
+
+  @ApiModelPropertyOptional()
+  @IsString()
+  @IsOptional()
+  readonly newDashboardName?: string;
 
   @ApiModelProperty()
   @IsNumber()
