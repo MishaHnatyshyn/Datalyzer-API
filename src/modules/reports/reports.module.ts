@@ -6,9 +6,10 @@ import { ModelsModule } from '../models/models.module';
 import { ReportsRepositoryService } from './reports-repository.service';
 import reportsProviders from './reports.providers';
 import DatabaseModule from '../database';
+import { DashboardModule } from '../dashboard/dashboard.module';
 
 @Module({
-  imports: [DatabaseModule, ConnectionsModule, ModelsModule],
+  imports: [DatabaseModule, DashboardModule, ConnectionsModule, ModelsModule],
   controllers: [ReportsController],
   providers: [
     ...reportsProviders,

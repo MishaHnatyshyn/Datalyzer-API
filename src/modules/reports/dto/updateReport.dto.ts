@@ -18,16 +18,14 @@ export class UpdateReportDto {
   @Min(40)
   readonly height?: number;
 
-  @ApiModelPropertyOptional({ minimum: 0 })
+  @ApiModelPropertyOptional()
   @IsOptional()
   @IsNumber()
-  @Min(0)
   readonly position_x?: number;
 
-  @ApiModelPropertyOptional({ minimum: 0 })
+  @ApiModelPropertyOptional()
   @IsOptional()
   @IsNumber()
-  @Min(0)
   readonly position_y?: number;
 
 }

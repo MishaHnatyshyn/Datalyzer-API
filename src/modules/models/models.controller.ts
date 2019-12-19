@@ -18,10 +18,17 @@ export class ModelsController {
     private modelsService: ModelsService,
   ) {}
 
-  @UseGuards(AuthGuard('admin'))
+  @ApiCreatedResponse({ type: ModelDetailsResponseObject })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('user'))
   @Get()
   getAll(@Query() { page, itemsPerPage, search }: SearchDto, @Request() { user }) {
-    return this.modelsService.getModelsList(page, itemsPerPage, search, user.id);
+    return this.modelsService.getModelsList(
+      page,
+      itemsPerPage,
+      search,
+      user.user_type_id === 1 ? user.id : user.created_by_id,
+    );
   }
 
   @ApiBearerAuth()

@@ -40,6 +40,7 @@ export class ModelItemsFieldRepositoryService extends BaseRepositoryService<Data
     return this.modelItemFieldRepository
       .createQueryBuilder('item')
       .select(['connection.id as id'])
+      .where({ id })
       .innerJoin('item.model_item', 'table')
       .innerJoin('table.model', 'model')
       .innerJoin('model.db_connection', 'connection')
@@ -48,7 +49,7 @@ export class ModelItemsFieldRepositoryService extends BaseRepositoryService<Data
 
   getModelItemsFieldsData(ids: number[]) {
     return this.modelItemFieldRepository.find({
-      select: ['original_name', 'type', 'model_item'],
+      select: ['id', 'original_name', 'given_name', 'type', 'model_item'],
       where: { id: In(ids) },
       relations: [ 'model_item'],
     });

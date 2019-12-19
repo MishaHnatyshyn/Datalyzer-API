@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import User from './user.entity';
 import Report from './report.entity';
 import DataModelItemField from './data-model-item-field.entity';
 
@@ -23,7 +22,7 @@ export default class ReportItem extends BaseEntity {
   @Column({ type: 'number', nullable: false })
   report_id: number;
 
-  @ManyToOne(type => User, { onDelete: 'CASCADE' })
+  @ManyToOne(type => Report, { onDelete: 'CASCADE' })
   @JoinColumn({name: 'report_id'})
   report: Report;
 
