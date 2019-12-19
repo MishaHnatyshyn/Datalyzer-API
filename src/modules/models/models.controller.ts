@@ -1,5 +1,5 @@
 import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import { Body, Controller, Get, Query, Post, Request, UseGuards, Delete, Param } from '@nestjs/common';
+import { Body, Controller, Get, Query, Post, Request, UseGuards, Delete, Param, Put } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {ModelsService} from './models.service';
 import {ModelsCountResponseObject} from './response-objects/models-count-response-object';
@@ -9,6 +9,7 @@ import {SearchDto} from '../shared/dto/searchDto';
 import { IdDto } from '../shared/dto/id.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 import ModelForReportResponseObject from './response-objects/model-for-report.response-object';
+import { RenameModelDto } from './dto/renameModel.dto';
 
 @ApiUseTags('models')
 @Controller('models')
@@ -60,5 +61,13 @@ export class ModelsController {
   @Post()
   create(@Body() data: CreateModelDto, @Request() { user }) {
     return this.modelsService.createModel(data, user.id);
+  }
+
+  @ApiCreatedResponse({ type: ModelDetailsResponseObject })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('admin'))
+  @Put(':id')
+  rename(@Param() { id }: IdDto, @Body() data: RenameModelDto) {
+    return this.modelsService.renameModel(data, id);
   }
 }

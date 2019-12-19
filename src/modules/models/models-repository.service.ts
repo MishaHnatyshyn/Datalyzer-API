@@ -26,22 +26,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
   }
 
   getPaginatedModelList(skip: number, itemsPerPage: number, search: string, admin: number) {
-    return this.modelRepository
-      .createQueryBuilder('model')
-      .select([
-        'model.name AS name',
-        'model.id AS id',
-        'model.created_at AS created',
-        'model.active AS active',
-        'connection.name AS connection',
-        'COUNT(table.id) AS tables',
-        'COUNT(field.id) AS fields',
-      ])
-      .where({ admin_id: admin, name: searchQuery(search) })
-      .innerJoin('model.db_connection', 'connection')
-      .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
-      .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
-      .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
+    return this.getBaseModelQueryBuilder({ admin_id: admin, name: searchQuery(search) })
       .skip(skip)
       .limit(itemsPerPage)
       .getRawMany();
@@ -69,5 +54,26 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
         'table.id = relation.second_model_item_id OR table.id = relation.first_model_item_id',
       )
       .getRawMany();
+  }
+  private getBaseModelQueryBuilder(params) {
+    return this.modelRepository
+      .createQueryBuilder('model')
+      .select([
+        'model.name AS name',
+        'model.id AS id',
+        'model.created_at AS created',
+        'model.active AS active',
+        'connection.name AS connection',
+        'COUNT(table.id) AS tables',
+        'COUNT(field.id) AS fields',
+      ])
+      .where(params)
+      .innerJoin('model.db_connection', 'connection')
+      .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
+      .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
+      .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
+  }
+  modelInfo(id) {
+    return this.getBaseModelQueryBuilder({ id }).getRawMany();
   }
 }

@@ -6,6 +6,7 @@ import { ModelItemsRelationRepositoryService } from './model-items-relation-repo
 import { EntityManager, getManager } from 'typeorm';
 import { CreateModelDto } from './dto/createModel.dto';
 import { ModelItem } from './dto/modelItem.dto';
+import { RenameModelDto } from './dto/renameModel.dto';
 import {
   createModelItemsMapForRelations,
   formModelDataForReportResponse,
@@ -82,7 +83,10 @@ export class ModelsService {
   async deleteModel(id: number) {
     return this.modelsRepositoryService.delete({ id });
   }
-
+  async renameModel(data: RenameModelDto, id: number) {
+    await this.modelsRepositoryService.update(id, data);
+    return this.modelsRepositoryService.modelInfo(id);
+  }
   getRelationData(firstId, secondId) {
     return this.modelItemsRelationRepositoryService.getRelationByModelItems(firstId, secondId);
   }
