@@ -85,7 +85,7 @@ export class ModelsService {
   }
   async renameModel(data: RenameModelDto, id: number) {
     await this.modelsRepositoryService.update(id, data);
-    return this.modelsRepositoryService.renameModel(id);
+    return this.modelsRepositoryService.modelInfo(id);
   }
   getRelationData(firstId, secondId) {
     return this.modelItemsRelationRepositoryService.getRelationByModelItems(firstId, secondId);
