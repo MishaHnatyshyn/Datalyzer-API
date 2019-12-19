@@ -13,5 +13,6 @@ import DatabaseModule from '../database';
     DashboardRepositoryService,
   ],
   controllers: [DashboardController],
+  exports: [DashboardService],
 })
 export class DashboardModule {}
