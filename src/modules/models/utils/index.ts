@@ -47,7 +47,11 @@ export const formModelDataForReportResponse = (data) => data.reduce((acc, curr) 
       if (!relation && curr.relation_id) {
         table.relations.push(curr.relation_id);
       }
-      table.fields.push(formModelItemField(curr));
+      const newField = formModelItemField(curr);
+      const field = table.fields.find(_ => _.name === newField.name && _.type === newField.type);
+      if (!field) {
+        table.fields.push(newField);
+      }
     } else {
       model.items.push(formModelItemWithFields(curr));
     }
