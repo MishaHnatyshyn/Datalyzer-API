@@ -6,7 +6,7 @@ import { AppModule } from '../../../app.module';
 jest.setTimeout(30000);
 
 describe('User e2e ', () => {
-  const { TEST_USER, TEST_USER_PASSWORD } = process.env;
+  const { TEST_ADMIN, TEST_ADMIN_PASSWORD } = process.env;
   let app: INestApplication;
   let token = '';
 
@@ -24,7 +24,7 @@ describe('User e2e ', () => {
   it(`Should validate user credits and return jwt token`, async () => {
     return request(app.getHttpServer())
       .post('/auth/login')
-      .send({username: TEST_USER, password: TEST_USER_PASSWORD})
+      .send({username: TEST_ADMIN, password: TEST_ADMIN_PASSWORD})
       .expect(201).then((res) => {
         token = res.body.access_token;
         expect(token).toBeDefined();
@@ -35,7 +35,7 @@ describe('User e2e ', () => {
     return request(app.getHttpServer())
       .put('/users/change-password')
       .set({Authorization: 'Bearer ' + token})
-      .send({password: '123456', old_password: TEST_USER_PASSWORD})
+      .send({password: '123456', old_password: TEST_ADMIN_PASSWORD})
       .expect(200);
   });
 
@@ -51,7 +51,7 @@ describe('User e2e ', () => {
     return request(app.getHttpServer())
       .put('/users/change-password')
       .set({Authorization: 'Bearer ' + token})
-      .send({password: TEST_USER_PASSWORD, old_password: '123456'})
+      .send({password: TEST_ADMIN_PASSWORD, old_password: '123456'})
       .expect(200);
   });
 

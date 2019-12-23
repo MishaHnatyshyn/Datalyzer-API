@@ -19,5 +19,6 @@ import modelsProviders from './models.providers';
     ModelItemsFieldRepositoryService,
     ModelItemsRelationRepositoryService,
   ],
+  exports: [ModelsService],
 })
 export class ModelsModule {}

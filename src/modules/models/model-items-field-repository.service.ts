@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import BaseRepositoryService from '../../base/baseRepository.service';
 import { MODEL_ITEM_FIELD_REPOSITORY } from '../../constants';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import DataModelItemField from '../database/entities/data-model-item-field.entity';
 import { ModelRow } from './dto/modelRow.dto';
 
@@ -12,6 +12,10 @@ export class ModelItemsFieldRepositoryService extends BaseRepositoryService<Data
     private readonly modelItemFieldRepository: Repository<DataModelItemField>,
   ) {
     super(modelItemFieldRepository);
+  }
+
+  findOneById(id: number) {
+   return this.modelItemFieldRepository.findOne(id, { relations: [ 'model_item' ] });
   }
 
   private formModelItemFieldEntity({ originalName, givenName, type, modelItemId }) {
@@ -30,5 +34,24 @@ export class ModelItemsFieldRepositoryService extends BaseRepositoryService<Data
     return connectionManager
       ? connectionManager.save(modelItemFields)
       : this.modelItemFieldRepository.save(modelItemFields);
+  }
+
+  getConnectionIdByModelItemFieldId(id: number) {
+    return this.modelItemFieldRepository
+      .createQueryBuilder('item')
+      .select(['connection.id as id'])
+      .where({ id })
+      .innerJoin('item.model_item', 'table')
+      .innerJoin('table.model', 'model')
+      .innerJoin('model.db_connection', 'connection')
+      .getRawOne();
+  }
+
+  getModelItemsFieldsData(ids: number[]) {
+    return this.modelItemFieldRepository.find({
+      select: ['id', 'original_name', 'given_name', 'type', 'model_item'],
+      where: { id: In(ids) },
+      relations: [ 'model_item'],
+    });
   }
 }

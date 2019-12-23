@@ -6,6 +6,7 @@ import {EntityManager, Repository} from 'typeorm';
 import DataModelItem from '../database/entities/data-model-item.entity';
 import DataModelItemField from '../database/entities/data-model-item-field.entity';
 import {searchQuery} from '../../base/utils';
+import DataModelItemRelation from '../database/entities/data-model-item-relation.entity';
 
 @Injectable()
 export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
@@ -25,6 +26,36 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
   }
 
   getPaginatedModelList(skip: number, itemsPerPage: number, search: string, admin: number) {
+    return this.getBaseModelQueryBuilder({ admin_id: admin, name: searchQuery(search) })
+      .skip(skip)
+      .limit(itemsPerPage)
+      .getRawMany();
+  }
+
+  getModelsListForReport(creator: number) {
+    return this.modelRepository
+      .createQueryBuilder('model')
+      .select([
+        'model.id',
+        'model.name',
+        'table.id',
+        'table.name',
+        'field.id',
+        'field.type',
+        'field.given_name',
+        'relation.id',
+      ])
+      .where({ admin_id: creator })
+      .innerJoin('model.modelItems', 'table')
+      .innerJoin('table.fields', 'field')
+      .leftJoin(
+        DataModelItemRelation,
+        'relation',
+        'table.id = relation.second_model_item_id OR table.id = relation.first_model_item_id',
+      )
+      .getRawMany();
+  }
+  private getBaseModelQueryBuilder(params) {
     return this.modelRepository
       .createQueryBuilder('model')
       .select([
@@ -36,13 +67,13 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
         'COUNT(table.id) AS tables',
         'COUNT(field.id) AS fields',
       ])
-      .where({ admin_id: admin, name: searchQuery(search) })
+      .where(params)
       .innerJoin('model.db_connection', 'connection')
       .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
       .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
       .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
-      .skip(skip)
-      .limit(itemsPerPage)
-      .getRawMany();
+  }
+  modelInfo(id) {
+    return this.getBaseModelQueryBuilder({ id }).getRawMany();
   }
 }
