@@ -1,0 +1,36 @@
+config:
+  target: 'https://datalyzer-api.herokuapp.com'
+  phases:
+    - duration: 60
+      arrivalRate: 20
+      count: 100
+      number: 100
+  defaults:
+    headers:
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJpZCI6MzIsInVzZXJfdHlwZSI6eyJpZCI6MiwibmFtZSI6InVzZXIifSwiaWF0IjoxNTc3MTQxMjY5LCJleHAiOjE1NzcyMjc2Njl9.2bln0LheS6To0GKCGB3oPMioMXiMKuLfIPZ-gx04844'
+      Content-type: "application/json"
+scenarios:
+  - flow:
+      - post:
+          url: "/reports"
+          json:
+            name: "Simple report 2"
+            dashboard: 2
+            newDashboardName: "Very new Report"
+            type: 5
+            modelItems:
+              - 167
+              - 168
+      - get:
+          url: "/dashboards?page=1&itemsPerPage=10"
+          capture:
+            json: "$[0].id"
+            as: "dashboardId"
+      - get:
+          url: "/reports/1"
+          capture:
+            json: "$"
+            as: "report"
+      - log: "{{ report }}"
+      - get:
+          url: "/dashboards/{{ dashboardId }}"
