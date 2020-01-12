@@ -44,7 +44,13 @@ export class ReportsService {
     const connection = await this.connectionManager.getConnection(connectionId);
     const queryBuilder = connection.createQueryBuilder();
     if (firstItem.model_item.id === secondItem.model_item.id) {
-      queryBuilder.select(fields.map(_ => _.original_name)).from(firstItem.model_item.table_name, 'table');
+      queryBuilder
+        .select([
+          `${firstItem.original_name} as ${firstItem.given_name}`,
+          `AVG(${secondItem.original_name}) as ${secondItem.given_name}`,
+        ])
+        .from(firstItem.model_item.table_name, 'table')
+        .groupBy(`${firstItem.original_name}`);
     } else {
       const {
         first_model_item_relation_field: firstTableRelField,
@@ -66,9 +72,10 @@ export class ReportsService {
       } = secondModelItemRelId === secondItem.model_item.id ? secondItem : firstItem;
 
       queryBuilder
-        .select([`"table".${fName} as ${fNameGiven}`, `"secondTable".${sName} as ${sNameGiven}`])
+        .select([`"table".${fName} as ${fNameGiven}`, `SUM("secondTable".${sName}) as ${sNameGiven}`])
         .from(fTable, 'table')
-        .innerJoin(sTable, 'secondTable', `"table".${firstTableRelField} = "secondTable".${secondTableRelField}`);
+        .innerJoin(sTable, 'secondTable', `"table".${firstTableRelField} = "secondTable".${secondTableRelField}`)
+        .groupBy(`"table".${fName}`);
     }
     return queryBuilder.getRawMany();
   }
