@@ -51,7 +51,6 @@ export class ReportsService {
         ])
         .from(firstItem.model_item.table_name, 'table')
         .groupBy(`${firstItem.original_name}`);
-      console.log(queryBuilder.getSql());
     } else {
       const {
         first_model_item_relation_field: firstTableRelField,
