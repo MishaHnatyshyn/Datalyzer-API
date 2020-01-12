@@ -32,7 +32,7 @@ describe('DashboardService', () => {
 
   describe('createDashboard', () => {
     it('should create dashboard', async () => {
-      const name = 'name'
+      const name = 'name';
       await service.createDashboard({ name }, mockUser);
       expect(dashboardRepositoryServiceMock.createDashboard).toBeCalledWith(name, mockUser);
     });

@@ -7,6 +7,7 @@ import DataModelItem from '../database/entities/data-model-item.entity';
 import DataModelItemField from '../database/entities/data-model-item-field.entity';
 import {searchQuery} from '../../base/utils';
 import DataModelItemRelation from '../database/entities/data-model-item-relation.entity';
+import Users from '../database/entities/user.entity';
 
 @Injectable()
 export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
@@ -17,22 +18,38 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
     super(modelRepository);
   }
 
-  createModel(name: string, adminId: number, connectionId: number, connectionManager?: EntityManager) {
+  createModel(name: string, adminId: number, connectionId: number, users: Users[], connectionManager?: EntityManager) {
     const model = new DataModel();
+    model.users = users;
     model.name = name;
     model.admin_id = adminId;
     model.db_connection_id = connectionId;
     return connectionManager ? connectionManager.save(model) : this.modelRepository.create(model);
   }
 
-  getPaginatedModelList(skip: number, itemsPerPage: number, search: string, admin: number) {
-    return this.getBaseModelQueryBuilder({ admin_id: admin, name: searchQuery(search) })
+  getPaginatedModelList(skip: number, itemsPerPage: number, search: string, user: number, isAdmin: boolean) {
+    return this.getUserTypeDependedQueryBuilder({ name: searchQuery(search) }, isAdmin, user)
       .skip(skip)
       .limit(itemsPerPage)
       .getRawMany();
   }
 
-  getModelsListForReport(creator: number) {
+  getCount({ isAdmin, user}) {
+    return this.getUserTypeDependedQueryBuilder({}, isAdmin, user)
+      .getCount();
+  }
+
+  getUserTypeDependedQueryBuilder(params, isAdmin, user) {
+    const query = this.getBaseModelQueryBuilder(params);
+    if (isAdmin) {
+      query.andWhere('model.admin_id = :user', { user });
+    } else {
+      query.innerJoin('model.users', 'users', 'users.id = :user', {user});
+    }
+    return query;
+  }
+
+  getModelsListForReport(user: number) {
     return this.modelRepository
       .createQueryBuilder('model')
       .select([
@@ -45,7 +62,6 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
         'field.given_name',
         'relation.id',
       ])
-      .where({ admin_id: creator })
       .innerJoin('model.modelItems', 'table')
       .innerJoin('table.fields', 'field')
       .leftJoin(
@@ -53,6 +69,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
         'relation',
         'table.id = relation.second_model_item_id OR table.id = relation.first_model_item_id',
       )
+      .leftJoin('model.users', 'users', 'users.id = :user', {user})
       .getRawMany();
   }
   private getBaseModelQueryBuilder(params) {
@@ -71,7 +88,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
       .innerJoin('model.db_connection', 'connection')
       .innerJoin(DataModelItem, 'table', 'table.model_id = model.id')
       .innerJoin(DataModelItemField, 'field', 'field.model_item_id = table.id')
-      .groupBy('model.created_at, model.name, connection.name, model.id, model.active')
+      .groupBy('model.created_at, model.name, connection.name, model.id, model.active');
   }
   modelInfo(id) {
     return this.getBaseModelQueryBuilder({ id }).getRawMany();

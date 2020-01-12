@@ -1,5 +1,5 @@
 import {Injectable, Inject, HttpException, HttpStatus} from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import User from '../database/entities/user.entity';
 import BaseRepositoryService from '../../base/baseRepository.service';
 import CreateUserDto from './dto/create.dto';
@@ -55,14 +55,18 @@ export class UsersService extends BaseRepositoryService<User> {
 
   async create(user: CreateUserDto, adminId: number): Promise<User> {
     const newUser = new User();
-    await this.checkUsernameUniqueness(user.username)
-    await this.checkUserTypeExistence(user.user_type_id)
+    await this.checkUsernameUniqueness(user.username);
+    await this.checkUserTypeExistence(user.user_type_id);
     newUser.username = user.username;
     newUser.description = user.description || '';
     newUser.password = await this.bcryptService.hashPassword(user.password);
     newUser.user_type_id = user.user_type_id;
     newUser.created_by_id = adminId;
     return this.userRepository.save(newUser);
+  }
+
+  getUsersById(ids: number[]): Promise<User[]> {
+    return super.findAll({id: In(ids)});
   }
 
   findAll(): Promise<User[]> {
