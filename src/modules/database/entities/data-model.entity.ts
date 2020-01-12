@@ -2,7 +2,7 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  Entity, JoinColumn,
+  Entity, JoinColumn, JoinTable, ManyToMany,
   ManyToOne, OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -38,6 +38,12 @@ export default class DataModel extends BaseEntity {
 
   @OneToMany(type => DataModelItem, item => item.model)
   modelItems: DataModelItem[];
+
+  @ManyToMany(type => User, user => user.data_models, {
+    cascade: true,
+  })
+  @JoinTable()
+  users: User[];
 
   @CreateDateColumn()
   created_at: string;

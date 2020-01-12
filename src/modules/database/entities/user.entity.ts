@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   JoinColumn,
   BaseEntity,
-  ManyToOne,
+  ManyToOne, ManyToMany, JoinTable,
 } from 'typeorm';
 import UserType from './userType.entity';
+import { type } from 'os';
+import DataModel from './data-model.entity';
 
 @Entity()
 export default class Users extends BaseEntity {
@@ -38,6 +40,9 @@ export default class Users extends BaseEntity {
   @ManyToOne(type => UserType)
   @JoinColumn({name: 'user_type_id'})
   user_type: UserType;
+
+  @ManyToMany(type => DataModel, model => model.users)
+  data_models: DataModel[];
 
   @CreateDateColumn()
   created_at: string;

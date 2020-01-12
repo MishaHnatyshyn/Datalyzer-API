@@ -27,7 +27,8 @@ export class ModelsController {
       page,
       itemsPerPage,
       search,
-      user.user_type_id === 1 ? user.id : user.created_by_id,
+      user.id,
+      user.user_type_id === 1,
     );
   }
 
@@ -36,7 +37,7 @@ export class ModelsController {
   @UseGuards(AuthGuard('user'))
   @Get('report')
   getModelsForReport(@Request() { user }) {
-    return this.modelsService.getModelsDataForReport(user.created_by_id);
+    return this.modelsService.getModelsDataForReport(user.id);
   }
 
   @ApiBearerAuth()
@@ -49,10 +50,10 @@ export class ModelsController {
 
   @ApiBearerAuth()
   @ApiOkResponse({ type: ModelsCountResponseObject })
-  @UseGuards(AuthGuard('admin'))
+  @UseGuards(AuthGuard('user'))
   @Get('count')
   getCount(@Request() { user }) {
-    return this.modelsService.getModelsCount(user.id);
+    return this.modelsService.getModelsCount(user);
   }
 
   @ApiCreatedResponse({ type: ModelDetailsResponseObject })

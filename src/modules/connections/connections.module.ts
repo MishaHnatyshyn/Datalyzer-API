@@ -17,6 +17,6 @@ import connectionsProviders from './connections.providers';
     ConnectionTypeRepositoryService,
     ConnectionManagerService,
   ],
-  exports: [ConnectionManagerService]
+  exports: [ConnectionManagerService],
 })
 export class ConnectionsModule {}

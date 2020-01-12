@@ -32,6 +32,6 @@ export class ModelItemsRelationRepositoryService extends BaseRepositoryService<D
     return this.modelItemRelationRepository.findOne({ where: [
         { first_model_item_id: firstModelItemId, second_model_item_id: secondModelItemId },
         { first_model_item_id: secondModelItemId, second_model_item_id: firstModelItemId },
-    ]})
+    ]});
   }
 }

@@ -12,6 +12,7 @@ import {
   formModelDataForReportResponse,
   patchRelationsDataWithModelsId,
 } from './utils';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ModelsService {
@@ -20,26 +21,31 @@ export class ModelsService {
     private modelItemsRepositoryService: ModelItemsRepositoryService,
     private modelItemsFieldRepositoryService: ModelItemsFieldRepositoryService,
     private modelItemsRelationRepositoryService: ModelItemsRelationRepositoryService,
+    private usersService: UsersService,
   ) {}
 
-  getModelsList(page, itemsPerPage, search, admin) {
+  getModelsList(page, itemsPerPage, search, user, isAdmin = true) {
     const skip = (page - 1) * itemsPerPage;
-    return this.modelsRepositoryService.getPaginatedModelList(skip, itemsPerPage, search, admin);
+    return this.modelsRepositoryService.getPaginatedModelList(skip, itemsPerPage, search, user, isAdmin);
   }
 
-  async getModelsDataForReport(admin: number) {
-    const data = await this.modelsRepositoryService.getModelsListForReport(admin);
+  async getModelsDataForReport(user: number) {
+    const data = await this.modelsRepositoryService.getModelsListForReport(user);
     return formModelDataForReportResponse(data);
   }
 
-  async getModelsCount(admin: number) {
-    const count = await this.modelsRepositoryService.getCount({ admin_id: admin });
+  async getModelsCount(user) {
+    const count = await this.modelsRepositoryService.getCount({
+      user: user.id,
+      isAdmin: user.user_type_id === 1,
+    });
     return { count };
   }
 
   async createModelInSingleTransaction(data: CreateModelDto, admin: number, manager) {
-    const { name, connectionId, items, relations } = data;
-    const model = await this.modelsRepositoryService.createModel(name, admin, connectionId, manager);
+    const { name, connectionId, items, relations, users } = data;
+    const usersWithAccess = await this.usersService.getUsersById(users);
+    const model = await this.modelsRepositoryService.createModel(name, admin, connectionId, usersWithAccess, manager);
     const { id: modelId } = model;
     const modelItems = await Promise.all(items.map(item => this.createModelItem(item, modelId, manager)));
     const modelItemsMap = createModelItemsMapForRelations(modelItems);

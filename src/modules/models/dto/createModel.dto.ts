@@ -24,4 +24,8 @@ export class CreateModelDto {
   @IsArray()
   @Type(() => ModelItem)
   readonly items: ModelItem[];
+
+  @ApiModelProperty({ isArray: true, type: 'number'})
+  @IsArray()
+  readonly users: number[];
 }

@@ -7,8 +7,10 @@ import { ModelItemsRelationRepositoryService } from '../model-items-relation-rep
 import { RelationItem } from '../dto/relationItem.dto';
 import { EntityManager } from 'typeorm';
 import * as utils from '../utils';
+import { UsersService } from '../../users/users.service';
+import Users from '../../database/entities/user.entity';
 
-jest.mock('../utils')
+jest.mock('../utils');
 
 describe('ModelsService', () => {
   let service: ModelsService;
@@ -16,6 +18,7 @@ describe('ModelsService', () => {
   let mockModelItemsRepositoryService;
   let mockModelItemsFieldsRepositoryService;
   let mockModelItemsRelationsRepositoryService;
+  let mockUsersService;
   let page;
   let itemsPerPage;
   let search;
@@ -42,6 +45,9 @@ describe('ModelsService', () => {
       createModel: jest.fn(),
       delete: jest.fn(),
     };
+    mockUsersService = {
+      getUsersById: jest.fn(),
+    };
     mockModelItemsRepositoryService = {
       createModelItem: jest.fn(),
     };
@@ -53,6 +59,7 @@ describe('ModelsService', () => {
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        { provide: UsersService, useValue: mockUsersService },
         { provide: ModelsRepositoryService, useValue: mockModelsRepositoryService },
         { provide: ModelItemsRepositoryService, useValue: mockModelItemsRepositoryService },
         { provide: ModelItemsFieldRepositoryService, useValue: mockModelItemsFieldsRepositoryService },
@@ -75,7 +82,7 @@ describe('ModelsService', () => {
       const result = await service.getModelsList(page, itemsPerPage, search, admin);
       expect(result).toBe(dummyResponse);
       expect(mockModelsRepositoryService.getPaginatedModelList).toBeCalledTimes(1);
-      expect(mockModelsRepositoryService.getPaginatedModelList).toBeCalledWith(0, itemsPerPage, search, admin);
+      expect(mockModelsRepositoryService.getPaginatedModelList).toBeCalledWith(0, itemsPerPage, search, admin, true);
     });
 
     it('should calculate skip value properly', async () => {
@@ -84,16 +91,20 @@ describe('ModelsService', () => {
       const expectedSkip = 20;
       await service.getModelsList(page, itemsPerPage, search, admin);
       expect(mockModelsRepositoryService.getPaginatedModelList).toBeCalledTimes(1);
-      expect(mockModelsRepositoryService.getPaginatedModelList).toBeCalledWith(expectedSkip, itemsPerPage, search, admin);
+      expect(mockModelsRepositoryService.getPaginatedModelList).toBeCalledWith(expectedSkip, itemsPerPage, search, admin, true);
     });
   });
 
   describe('getModelsCount', () => {
+    const mockUser = {
+      id: 1,
+      user_type_id: 1,
+    };
     it('should return proper count of models', async () => {
       mockModelsRepositoryService.getCount = jest.fn().mockReturnValue(5);
-      const result = await service.getModelsCount(admin);
+      const result = await service.getModelsCount(mockUser);
       expect(mockModelsRepositoryService.getCount).toBeCalledTimes(1);
-      expect(mockModelsRepositoryService.getCount).toBeCalledWith({ admin_id: admin });
+      expect(mockModelsRepositoryService.getCount).toBeCalledWith({ isAdmin: true, user: 1 });
       expect(result).toStrictEqual({ count: 5 });
     });
   });
@@ -113,10 +124,13 @@ describe('ModelsService', () => {
       connectionId: 1,
       items: mockModelItems,
       relations: [],
+      users: [1],
     };
+    const mockUsers = [new Users()];
     const { name, connectionId, items, relations } = data;
     it('should create model in single sql transaction', async () => {
       mockModelsRepositoryService.createModel = jest.fn().mockReturnValue(Promise.resolve(mockModel));
+      mockUsersService.getUsersById.mockReturnValue(mockUsers);
       service.createModelItem = jest.fn()
         .mockReturnValueOnce(mockModelItems[0])
         .mockReturnValue(mockModelItems[1]);
@@ -138,7 +152,8 @@ describe('ModelsService', () => {
       };
 
       const result = await service.createModelInSingleTransaction(data, admin, manager);
-      expect(mockModelsRepositoryService.createModel).toBeCalledWith(name, admin, connectionId, manager);
+      expect(mockUsersService.getUsersById).toBeCalledWith(data.users);
+      expect(mockModelsRepositoryService.createModel).toBeCalledWith(name, admin, connectionId, mockUsers, manager);
 
       expect(utils.createModelItemsMapForRelations).toBeCalledWith(mockModelItems);
       expect(utils.patchRelationsDataWithModelsId).toBeCalledWith(mockModelItemsMap, relations);

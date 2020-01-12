@@ -7,9 +7,10 @@ import { ModelItemsFieldRepositoryService } from './model-items-field-repository
 import { ModelItemsRelationRepositoryService } from './model-items-relation-repository.service';
 import DatabaseModule from '../database';
 import modelsProviders from './models.providers';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [ModelsController],
   providers: [
     ...modelsProviders,
