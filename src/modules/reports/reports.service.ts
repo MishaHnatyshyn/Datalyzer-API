@@ -35,6 +35,8 @@ export class ReportsService {
   async getFieldValues(data: number[]) {
     const fields = await this.modelsService.getModelItemsFieldsData(data);
     const [firstItem, secondItem] = fields;
+    const fact = firstItem.type === 'fact' ? firstItem : secondItem;
+    const dimension = firstItem.type === 'dimension' ? firstItem : secondItem;
     const connectionId = await this.modelsService.getConnectionIdByModelItemFieldId(firstItem.id);
     if (!connectionId) {
       throw new HttpException({
@@ -46,11 +48,11 @@ export class ReportsService {
     if (firstItem.model_item.id === secondItem.model_item.id) {
       queryBuilder
         .select([
-          `${firstItem.original_name} as ${firstItem.given_name}`,
-          `AVG(${secondItem.original_name}) as ${secondItem.given_name}`,
+          `${dimension.original_name} as ${dimension.given_name}`,
+          `AVG(${fact.original_name}) as ${fact.given_name}`,
         ])
-        .from(firstItem.model_item.table_name, 'table')
-        .groupBy(`${firstItem.original_name}`);
+        .from(dimension.model_item.table_name, 'table')
+        .groupBy(`${dimension.original_name}`);
     } else {
       const {
         first_model_item_relation_field: firstTableRelField,
@@ -72,10 +74,18 @@ export class ReportsService {
       } = secondModelItemRelId === secondItem.model_item.id ? secondItem : firstItem;
 
       queryBuilder
-        .select([`"table".${fName} as ${fNameGiven}`, `SUM("secondTable".${sName}) as ${sNameGiven}`])
         .from(fTable, 'table')
         .innerJoin(sTable, 'secondTable', `"table".${firstTableRelField} = "secondTable".${secondTableRelField}`)
-        .groupBy(`"table".${fName}`);
+
+      if (fName === dimension.original_name) {
+        queryBuilder
+          .select([`"table".${fName} as ${fNameGiven}`, `SUM("secondTable".${sName}) as ${sNameGiven}`])
+          .groupBy(`"table".${fName}`);
+      } else {
+        queryBuilder
+          .select([`SUM("table".${fName}) as ${fNameGiven}`, `"secondTable".${sName} as ${sNameGiven}`])
+          .groupBy(`"secondTable".${sName}`);
+      }
     }
     return queryBuilder.getRawMany();
   }
