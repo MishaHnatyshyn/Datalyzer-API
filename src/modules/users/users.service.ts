@@ -27,7 +27,8 @@ export class UsersService extends BaseRepositoryService<User> {
     if (user_type_id) {
       await this.checkUserTypeExistence(user_type_id);
     }
-    if (username) {
+    const originalUser = await this.findById(id);
+    if (username && originalUser.username !== username) {
       await this.checkUsernameUniqueness(username);
     }
     await this.userRepository.update(id, data);
