@@ -17,17 +17,23 @@ export enum ConnectionErrorMessage {
   CONNECTION_DOES_NOT_EXISTS = 'Connection with such an id does not exists',
 }
 
+export interface ColumnDescriptor {
+  name: string;
+  isNumeric: boolean;
+}
+
 export interface TableAndColumnQueryResult {
   table: string;
   column: string;
+  type: string;
 }
 
 export interface FormattedTableAndColumnQueryResult {
   tableName: string;
-  columns: string[];
+  columns: ColumnDescriptor[];
 }
 export interface GroupedTableAndColumnQueryResult {
-  [key: string]: string[];
+  [key: string]: ColumnDescriptor[];
 }
 
 export interface RelationsQueryResult {
