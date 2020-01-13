@@ -1,6 +1,6 @@
 const dataBaseSelectTablesAndColumnsQuery = {
   postgres: `
-    SELECT tablename AS table, column_name AS column
+    SELECT tablename AS table, column_name AS column, data_type as type
     FROM pg_catalog.pg_tables
     INNER JOIN information_schema.columns
     ON table_name = tablename

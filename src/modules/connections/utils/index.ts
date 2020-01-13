@@ -7,11 +7,11 @@ import {
 } from '../connections.interfaces';
 
 export const groupColumnsByTables = (data: TableAndColumnQueryResult[]): GroupedTableAndColumnQueryResult =>
-  data.reduce((acc, { column, table }) => {
+  data.reduce((acc, { column: name, table, type }) => {
     if (acc[table]) {
-      acc[table].push(column);
+      acc[table].push({ name, type });
     } else {
-      acc[table] = [column];
+      acc[table] = [{ name, type }];
     }
     return acc;
   }, {});
