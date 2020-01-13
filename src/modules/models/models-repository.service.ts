@@ -69,7 +69,7 @@ export class ModelsRepositoryService extends BaseRepositoryService<DataModel> {
         'relation',
         'table.id = relation.second_model_item_id OR table.id = relation.first_model_item_id',
       )
-      .leftJoin('model.users', 'users', 'users.id = :user', {user})
+      .innerJoin('model.users', 'users', 'users.id = :user', {user})
       .getRawMany();
   }
   private getBaseModelQueryBuilder(params) {
