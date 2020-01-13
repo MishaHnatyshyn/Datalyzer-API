@@ -27,20 +27,26 @@ export class ConnectionsService {
     if (data.name) {
       await this.checkNameUniqueness(data.name);
     }
-    const connection = await this.connectionRepository.getById(id);
-    const connectionTypeName = await this.getConnectionType(connection.type_id);
 
-    const connectionData = {
+    const connection = await this.connectionRepository.getById(id);
+    const typeId = data.type || connection.type_id;
+
+    const connectionTypeName = await this.getConnectionType(typeId);
+    const databaseName = data.databaseName || connection.db_name;
+
+    const connectionBaseData = {
       name: data.name || connection.name,
-      database: data.databaseName || connection.db_name,
       port: data.port || connection.port,
       host: data.host || connection.host,
       username: data.username || connection.username,
       password: data.password || connection.password,
-      type: connectionTypeName,
     };
+
+    const connectionData = { ...connectionBaseData, database: databaseName, type: connectionTypeName };
+    const connectionEntityData = { ...connectionBaseData, db_name: databaseName, type_id: typeId };
+
     await this.checkIfCanEstablishConnection(connectionData);
-    await this.connectionRepository.update(id, data);
+    await this.connectionRepository.update(id, connectionEntityData);
     return this.connectionRepository.getById(id);
   }
 
