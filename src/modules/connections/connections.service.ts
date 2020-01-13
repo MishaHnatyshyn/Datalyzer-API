@@ -24,12 +24,12 @@ export class ConnectionsService {
   ) {}
 
   async updateConnection(id: number, data: UpdateConnectionDto) {
-    if (data.name) {
-      await this.checkNameUniqueness(data.name);
-    }
-
     const connection = await this.connectionRepository.getById(id);
     const typeId = data.type || connection.type_id;
+
+    if (data.name && data.name !== connection.name) {
+      await this.checkNameUniqueness(data.name);
+    }
 
     const connectionTypeName = await this.getConnectionType(typeId);
     const databaseName = data.databaseName || connection.db_name;
