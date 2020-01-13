@@ -101,6 +101,7 @@ export class ConnectionsService {
 
   async getConnectionTables(id: number): Promise<FormattedTableAndColumnQueryResult[]> {
     const result = await this.execRawQuery<TableAndColumnQueryResult[]>(id, queries.dataBaseSelectTablesAndColumnsQuery);
+    console.log(result)
     return formatTablesAndColumnsResponse(result);
   }
 
