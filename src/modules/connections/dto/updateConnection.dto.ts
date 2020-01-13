@@ -1,4 +1,4 @@
-import {IsString, IsNumberString, IsOptional} from 'class-validator';
+import { IsString, IsNumberString, IsOptional, IsNumber } from 'class-validator';
 import {ApiModelProperty} from '@nestjs/swagger';
 
 export class UpdateConnectionDto {
@@ -31,4 +31,9 @@ export class UpdateConnectionDto {
   @IsOptional()
   @IsString()
   databaseName: string;
+
+  @ApiModelProperty()
+  @IsOptional()
+  @IsNumber()
+  type: number;
 }
