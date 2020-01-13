@@ -4,7 +4,7 @@ import { ConnectionManagerService } from '../connection-manager.service';
 import { ConnectionsRepositoryService } from '../connections-repository.service';
 import { ConnectionTypeRepositoryService } from '../connection-type-repository.service';
 import { CreateConnectionDto } from '../dto/createConnection.dto';
-import {ConnectionErrorMessage} from '../connections.interfaces';
+import { ConnectionErrorMessage } from '../connections.interfaces';
 import queries from '../../database/queries';
 
 jest.mock('../connection-manager.service');
@@ -73,7 +73,7 @@ describe('ConnectionsService', () => {
       }
     });
 
-    it('should return proper error if connection type doesn\'t exists', async () => {
+    it("should return proper error if connection type doesn't exists", async () => {
       connectionTypeRepositoryMock.getConnectionTypeName = jest.fn().mockReturnValue(false);
       try {
         await service.createNewConnection(mockRequestData, mockAdminId);
@@ -82,7 +82,7 @@ describe('ConnectionsService', () => {
       }
     });
 
-    it('should return proper error if connection can\'t be established', async () => {
+    it("should return proper error if connection can't be established", async () => {
       ConnectionManagerService.isReachable = jest.fn().mockReturnValue(false);
       try {
         await service.createNewConnection(mockRequestData, mockAdminId);
@@ -97,7 +97,6 @@ describe('ConnectionsService', () => {
       const connection = await service.createNewConnection(mockRequestData, mockAdminId);
       expect(connection).toBe(mockConnectionEntity);
     });
-
   });
 
   describe('getConnectionTables', () => {
@@ -105,20 +104,23 @@ describe('ConnectionsService', () => {
       const mockConnectionId = 1;
       const mockDbType = 'postgres';
       const mockTablesAndColumnsResponse = [
-        { table: 'table1', column: 'column1' },
-        { table: 'table1', column: 'column2' },
-        { table: 'table2', column: 'column1' },
-        { table: 'table2', column: 'column2' },
-        { table: 'table3', column: 'column1' },
-        { table: 'table3', column: 'column2' },
+        { table: 'table1', column: 'column1', type: 'integer' },
+        { table: 'table1', column: 'column2', type: 'integer' },
+        { table: 'table2', column: 'column1', type: 'integer' },
+        { table: 'table2', column: 'column2', type: 'integer' },
+        { table: 'table3', column: 'column1', type: 'integer' },
+        { table: 'table3', column: 'column2', type: 'integer' },
       ];
       const mockConnection = {
         query: jest.fn().mockReturnValue(mockTablesAndColumnsResponse),
       };
       const expectedResult = [
-        { tableName: 'table1', columns: [ 'column1', 'column2' ] },
-        { tableName: 'table2', columns: [ 'column1', 'column2' ] },
-        { tableName: 'table3', columns: [ 'column1', 'column2' ] },
+        {
+          tableName: 'table1',
+          columns: [{ name: 'column1', isNumeric: true }, { name: 'column2', isNumeric: true }],
+        },
+        { tableName: 'table2', columns: [{ name: 'column1', isNumeric: true }, { name: 'column2', isNumeric: true }] },
+        { tableName: 'table3', columns: [{ name: 'column1', isNumeric: true }, { name: 'column2', isNumeric: true }] },
       ];
       connectionRepositoryMock.getDataForConnectionCreating.mockReturnValue({ type: mockDbType });
       connectionManagerMock.getConnection.mockReturnValue(mockConnection);
@@ -135,15 +137,30 @@ describe('ConnectionsService', () => {
       const mockConnectionId = 1;
       const mockDbType = 'postgres';
       const mockRelationsResponse = [
-        { fk_column: 'fk_column', foreign_table: 'foreign_table', pk_column: 'pk_column', primary_table: 'primary_table' },
-        { fk_column: 'fk_column1', foreign_table: 'foreign_table1', pk_column: 'pk_column1', primary_table: 'primary_table1' },
+        {
+          fk_column: 'fk_column',
+          foreign_table: 'foreign_table',
+          pk_column: 'pk_column',
+          primary_table: 'primary_table',
+        },
+        {
+          fk_column: 'fk_column1',
+          foreign_table: 'foreign_table1',
+          pk_column: 'pk_column1',
+          primary_table: 'primary_table1',
+        },
       ];
       const mockConnection = {
         query: jest.fn().mockReturnValue(mockRelationsResponse),
       };
       const expectedResult = [
         { fkColumn: 'fk_column', foreignTable: 'foreign_table', pkColumn: 'pk_column', primaryTable: 'primary_table' },
-        { fkColumn: 'fk_column1', foreignTable: 'foreign_table1', pkColumn: 'pk_column1', primaryTable: 'primary_table1' },
+        {
+          fkColumn: 'fk_column1',
+          foreignTable: 'foreign_table1',
+          pkColumn: 'pk_column1',
+          primaryTable: 'primary_table1',
+        },
       ];
       connectionRepositoryMock.getDataForConnectionCreating.mockReturnValue({ type: mockDbType });
       connectionManagerMock.getConnection.mockReturnValue(mockConnection);

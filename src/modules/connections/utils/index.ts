@@ -5,13 +5,18 @@ import {
   RelationsQueryResult,
   TableAndColumnQueryResult,
 } from '../connections.interfaces';
+import { numericTypes } from '../../database/numericTypes';
 
 export const groupColumnsByTables = (data: TableAndColumnQueryResult[]): GroupedTableAndColumnQueryResult =>
   data.reduce((acc, { column: name, table, type }) => {
+    const columnData = {
+      name,
+      isNumeric: numericTypes.postgres.includes(type),
+    };
     if (acc[table]) {
-      acc[table].push({ name, type });
+      acc[table].push(columnData);
     } else {
-      acc[table] = [{ name, type }];
+      acc[table] = [columnData];
     }
     return acc;
   }, {});

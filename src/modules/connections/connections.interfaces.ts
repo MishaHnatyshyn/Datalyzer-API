@@ -19,7 +19,7 @@ export enum ConnectionErrorMessage {
 
 export interface ColumnDescriptor {
   name: string;
-  type: string;
+  isNumeric: boolean;
 }
 
 export interface TableAndColumnQueryResult {
