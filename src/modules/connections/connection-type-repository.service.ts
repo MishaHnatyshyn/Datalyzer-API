@@ -12,12 +12,13 @@ export class ConnectionTypeRepositoryService {
   ) {}
 
   async checkIfExists(id: number): Promise<boolean> {
-    const type = await this.connectionTypeRepository.findOne(id);
+    const type = await this.connectionTypeRepository.findOneBy({ id });
     return !!type;
   }
 
   async getConnectionTypeName(id: number): Promise<DatabaseType> {
-    const type = await this.connectionTypeRepository.findOne(id, {
+    const type = await this.connectionTypeRepository.findOne({
+      where: { id },
       select: ['name'],
     });
     return type ? type.name as DatabaseType : null;

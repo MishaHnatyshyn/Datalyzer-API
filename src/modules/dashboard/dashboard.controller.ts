@@ -2,14 +2,14 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGua
 import { DashboardService } from './dashboard.service';
 import { AuthGuard } from '@nestjs/passport';
 import { SearchDto } from '../shared/dto/searchDto';
-import { ApiBearerAuth, ApiOkResponse, ApiUseTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { IdDto } from '../shared/dto/id.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 import { DashboardResponseObject } from './response-objects/dashboard.response-object';
 import { DashboardCreateDto } from './dto/dashboardCreate.dto';
 import { DashboardDetailsResponseObject } from './response-objects/dashboard-details.response-object';
 
-@ApiUseTags('dashboards')
+@ApiTags('dashboards')
 @Controller('dashboards')
 export class DashboardController {
   constructor(private dashboardService: DashboardService) {}

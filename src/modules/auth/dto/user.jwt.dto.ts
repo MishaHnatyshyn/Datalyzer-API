@@ -1,17 +1,17 @@
 import { IsNotEmpty } from 'class-validator';
 import { UserType } from './user.type.dto';
-import {ApiModelProperty} from '@nestjs/swagger';
+import {ApiProperty} from '@nestjs/swagger';
 
 export class UserJwtDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   username: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   id: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNotEmpty()
   user_type: UserType;
 }

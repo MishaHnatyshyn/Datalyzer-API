@@ -1,24 +1,24 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class UserResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   username: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   description: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   user_type_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   created_by_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   created_at: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   updated_at: string;
 }

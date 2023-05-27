@@ -1,27 +1,27 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class ModelDetailsResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   name: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   users: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   created: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   tables: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   fields: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   uses: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   active: boolean;
 }

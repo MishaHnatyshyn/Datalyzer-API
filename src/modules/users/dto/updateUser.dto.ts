@@ -1,18 +1,18 @@
 import {IsString, IsNumber, IsOptional} from 'class-validator';
-import {ApiModelPropertyOptional} from '@nestjs/swagger';
+import {ApiPropertyOptional} from '@nestjs/swagger';
 
 export default class UpdateUserDto {
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   username: string;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   user_type_id: number;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   description?: string;

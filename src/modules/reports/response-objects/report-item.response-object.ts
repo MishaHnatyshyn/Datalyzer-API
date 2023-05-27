@@ -1,21 +1,21 @@
-import { ApiResponseModelProperty } from '@nestjs/swagger';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
 export class ReportItemResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   report_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   name: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   model_item_field_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   created_at: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   updated_at: string;
 }

@@ -32,7 +32,7 @@ export class UsersService extends BaseRepositoryService<User> {
       await this.checkUsernameUniqueness(username);
     }
     await this.userRepository.update(id, data);
-    return this.userRepository.findOne(id);
+    return this.userRepository.findOneBy({ id: id });
   }
 
   private async checkUsernameUniqueness(username: string) {
@@ -45,7 +45,7 @@ export class UsersService extends BaseRepositoryService<User> {
     }
   }
   private async checkUserTypeExistence(typeId: number) {
-    const type = await this.userTypeRepository.findOne(typeId);
+    const type = await this.userTypeRepository.findOneBy({id: typeId});
     if (!type) {
       throw new HttpException({
         status: HttpStatus.BAD_REQUEST,

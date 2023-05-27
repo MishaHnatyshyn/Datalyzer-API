@@ -1,6 +1,6 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class ModelsCountResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   count: number;
 }

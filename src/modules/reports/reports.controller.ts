@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { DataForNewReportDto } from './dto/dataForNewReport.dto';
 import { ReportsService } from './reports.service';
 import { ModelDataItemFieldResponseObject } from './response-objects/model-data-item-field-response-object';
@@ -12,7 +12,7 @@ import { ReportResponseObject } from './response-objects/report.response-object'
 import { ReportUpdateResponseObject } from './response-objects/report-update.response-object';
 import { ReportDataResponseObject } from './response-objects/report-data.response-object';
 
-@ApiUseTags('reports')
+@ApiTags('reports')
 @Controller('reports')
 export class ReportsController {
   constructor(private reportsService: ReportsService) {}

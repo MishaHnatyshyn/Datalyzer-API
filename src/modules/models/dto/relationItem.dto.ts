@@ -1,20 +1,20 @@
 import { IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class RelationItem {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   firstTableName: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   firstTableColumn: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   secondTableName: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   secondTableColumn: string;
 }

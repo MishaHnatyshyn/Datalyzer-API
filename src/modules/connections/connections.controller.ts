@@ -3,7 +3,7 @@ import {AuthGuard} from '@nestjs/passport';
 import {CreateConnectionDto} from './dto/createConnection.dto';
 import {ConnectionsService} from './connections.service';
 import { SearchDto } from '../shared/dto/searchDto';
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {ConnectionResponseObject} from './response-objects/connection-response-object';
 import {ConnectionTablesResponseObject} from './response-objects/connection-tables-response-object';
 import {ConnectionsCountResponseObject} from './response-objects/connections-count-response-object';
@@ -12,7 +12,7 @@ import { IdDto } from '../shared/dto/id.dto';
 import { DeleteResponseObject } from '../shared/response-objects/delete.response-object';
 import {UpdateConnectionDto} from './dto/updateConnection.dto';
 
-@ApiUseTags('connections')
+@ApiTags('connections')
 @Controller('connections')
 export class ConnectionsController {
   constructor(
@@ -76,7 +76,6 @@ export class ConnectionsController {
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({type: []})
   @UseGuards(AuthGuard('user'))
   @Get(':id/check')
   checkIfReachable(@Param() { id }: IdDto) {

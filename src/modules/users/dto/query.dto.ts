@@ -1,8 +1,8 @@
 import { IsOptional, IsString } from 'class-validator';
-import { ApiModelPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryDto {
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   search?: string;

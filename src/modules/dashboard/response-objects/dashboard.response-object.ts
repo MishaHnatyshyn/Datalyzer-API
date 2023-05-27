@@ -1,18 +1,18 @@
-import { ApiResponseModelProperty } from '@nestjs/swagger';
+import { ApiResponseProperty } from '@nestjs/swagger';
 
 export class DashboardResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   name: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   user_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   created_at: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   updated_at: string;
 }

@@ -29,11 +29,12 @@ export class ConnectionsRepositoryService extends BaseRepositoryService<Connecti
   }
 
   getById(id: number): Promise<Connection> {
-    return this.connectionRepository.findOne(id);
+    return this.connectionRepository.findOneBy({ id: id });
   }
 
   async getDataForConnectionCreating(id: number): Promise<ConnectionData> {
-    const connection = await this.connectionRepository.findOne(id, {
+    const connection = await this.connectionRepository.findOne({
+      where: { id },
       relations: ['type'],
     });
     if (!connection) {
@@ -44,7 +45,7 @@ export class ConnectionsRepositoryService extends BaseRepositoryService<Connecti
   }
 
   getByConnectionName(name: string): Promise<Connection> {
-    return this.connectionRepository.findOne({ name });
+    return this.connectionRepository.findOneBy({ name });
   }
 
   getConnectionList(skip: number, itemsPerPage: number, search: string, admin: number): Promise<Connection[]> {

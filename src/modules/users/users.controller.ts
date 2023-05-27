@@ -4,7 +4,7 @@ import CreateDto from './dto/create.dto';
 import { SearchDto } from '../shared/dto/searchDto';
 import { AuthGuard } from '@nestjs/passport';
 import { NewPasswordDto } from './dto/newPassword.dto';
-import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUseTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {UserResponseObject} from './response-objects/user-response-object';
 import {UserCountResponseObject} from './response-objects/user-count-response-object';
 import { IdDto } from '../shared/dto/id.dto';
@@ -12,7 +12,7 @@ import { DeleteResponseObject } from '../shared/response-objects/delete.response
 import { QueryDto } from './dto/query.dto';
 import UpdateUserDto from './dto/updateUser.dto';
 
-@ApiUseTags('users')
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(

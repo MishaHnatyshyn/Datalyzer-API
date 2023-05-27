@@ -1,12 +1,12 @@
 import {IsNumber, IsString} from 'class-validator';
-import {ApiModelProperty} from '@nestjs/swagger';
+import {ApiProperty} from '@nestjs/swagger';
 
 export class DeleteDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNumber()
   id: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   deletionConfirmed: string;
 }

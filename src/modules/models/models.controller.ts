@@ -1,4 +1,4 @@
-import { ApiUseTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { Body, Controller, Get, Query, Post, Request, UseGuards, Delete, Param, Put } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {ModelsService} from './models.service';
@@ -11,7 +11,7 @@ import { DeleteResponseObject } from '../shared/response-objects/delete.response
 import ModelForReportResponseObject from './response-objects/model-for-report.response-object';
 import { RenameModelDto } from './dto/renameModel.dto';
 
-@ApiUseTags('models')
+@ApiTags('models')
 @Controller('models')
 export class ModelsController {
   constructor(

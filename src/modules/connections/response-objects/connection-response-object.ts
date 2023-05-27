@@ -1,36 +1,36 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class ConnectionResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   username: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   db_name: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   name: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   password: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   host: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   port: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   admin_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   type_id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   created_at: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   updated_at: string;
 }

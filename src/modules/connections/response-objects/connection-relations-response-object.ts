@@ -1,15 +1,15 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class ConnectionRelationsResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   foreignTable: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   fkColumn: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   primaryTable: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   pkColumn: string;
 }

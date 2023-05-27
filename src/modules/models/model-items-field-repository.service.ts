@@ -15,7 +15,10 @@ export class ModelItemsFieldRepositoryService extends BaseRepositoryService<Data
   }
 
   findOneById(id: number) {
-   return this.modelItemFieldRepository.findOne(id, { relations: [ 'model_item' ] });
+   return this.modelItemFieldRepository.findOne({
+     where: { id: id },
+     relations: [ 'model_item' ]
+   });
   }
 
   private formModelItemFieldEntity({ originalName, givenName, type, modelItemId }) {

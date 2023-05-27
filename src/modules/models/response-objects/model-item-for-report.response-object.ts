@@ -1,16 +1,16 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 import ModelItemFieldForReportResponseObject from './model-item-field-for-report.response-object';
 
 export default class ModelItemForReportResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   id: number;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   name: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   relations: number[];
 
-  @ApiResponseModelProperty({ type: [ModelItemFieldForReportResponseObject] })
+  @ApiResponseProperty({ type: [ModelItemFieldForReportResponseObject] })
   fields: ModelItemFieldForReportResponseObject[];
 }

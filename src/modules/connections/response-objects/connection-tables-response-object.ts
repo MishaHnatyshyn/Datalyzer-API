@@ -1,9 +1,9 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class ConnectionTablesResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   tableName: string;
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   columns: string[];
 }

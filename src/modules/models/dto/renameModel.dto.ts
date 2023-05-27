@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class RenameModelDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   readonly name: string;

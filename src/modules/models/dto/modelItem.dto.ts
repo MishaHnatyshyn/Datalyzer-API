@@ -1,18 +1,18 @@
 import { IsArray, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ModelRow } from './modelRow.dto';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ModelItem {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   tableName: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   name: string;
 
-  @ApiModelProperty({ type: [ModelRow] })
+  @ApiProperty({ type: [ModelRow] })
   @ValidateNested({ each: true })
   @IsArray()
   @Type(() => ModelRow)

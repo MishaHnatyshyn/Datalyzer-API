@@ -1,16 +1,16 @@
 import { IsString } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ModelRow {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   originalName: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   givenName: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   type: string;
 }

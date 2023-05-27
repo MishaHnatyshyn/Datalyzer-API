@@ -5,8 +5,9 @@ export default class BaseRepositoryService<Entity extends BaseEntity> {
     public repository: Repository<Entity>,
   ) {}
 
-  findById(id: number, options?: object): Promise<Entity> {
-    return this.repository.findOne(id, options);
+  findById(id: number, options: object = {}): Promise<Entity> {
+    // @ts-ignore
+    return this.repository.findOne({ where: { id }, ...options});
   }
 
   findAll(options?: object): Promise<Entity[]> {

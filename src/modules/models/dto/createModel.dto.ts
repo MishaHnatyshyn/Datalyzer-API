@@ -2,30 +2,30 @@ import { IsArray, IsNumber, IsObject, IsOptional, IsString, ValidateNested } fro
 import { Type } from 'class-transformer';
 import { RelationItem } from './relationItem.dto';
 import { ModelItem } from './modelItem.dto';
-import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateModelDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsNumber()
   readonly connectionId: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsString()
   readonly name: string;
 
-  @ApiModelPropertyOptional({ type: [RelationItem] })
+  @ApiPropertyOptional({ type: [RelationItem] })
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => RelationItem)
   readonly relations: RelationItem[];
 
-  @ApiModelProperty({ type: [ModelItem] })
+  @ApiProperty({ type: [ModelItem] })
   @ValidateNested({ each: true })
   @IsArray()
   @Type(() => ModelItem)
   readonly items: ModelItem[];
 
-  @ApiModelProperty({ isArray: true, type: 'number'})
+  @ApiProperty({ isArray: true, type: 'number'})
   @IsArray()
   readonly users: number[];
 }

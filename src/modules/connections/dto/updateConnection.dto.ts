@@ -1,38 +1,38 @@
 import { IsString, IsNumberString, IsOptional, IsNumber } from 'class-validator';
-import {ApiModelProperty} from '@nestjs/swagger';
+import {ApiProperty} from '@nestjs/swagger';
 
 export class UpdateConnectionDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   host: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsNumberString()
   port: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   username: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   password: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   name: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsString()
   databaseName: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsOptional()
   @IsNumber()
   type: number;

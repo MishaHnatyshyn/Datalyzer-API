@@ -1,9 +1,9 @@
-import {ApiResponseModelProperty} from '@nestjs/swagger';
+import {ApiResponseProperty} from '@nestjs/swagger';
 
 export class DeleteResponseObject {
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   raw: [];
 
-  @ApiResponseModelProperty()
+  @ApiResponseProperty()
   affected: number;
 }

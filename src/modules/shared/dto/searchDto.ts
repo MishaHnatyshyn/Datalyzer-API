@@ -1,19 +1,19 @@
 import {IsNumber, IsString, IsOptional} from 'class-validator';
 import { Type } from 'class-transformer';
-import {ApiModelProperty, ApiModelPropertyOptional} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 
 export class SearchDto {
-  @ApiModelProperty()
+  @ApiProperty()
   @Type(() => Number)
   @IsNumber()
   page: number;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @Type(() => Number)
   @IsNumber()
   itemsPerPage: number;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   search?: string;

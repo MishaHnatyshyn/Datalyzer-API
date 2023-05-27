@@ -3,27 +3,27 @@ import {
   Min,
   IsOptional,
 } from 'class-validator';
-import { ApiModelPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateReportDto {
-  @ApiModelPropertyOptional({ minimum: 40 })
+  @ApiPropertyOptional({ minimum: 40 })
   @IsOptional()
   @IsNumber()
   @Min(40)
   readonly width?: number;
 
-  @ApiModelPropertyOptional({ minimum: 40 })
+  @ApiPropertyOptional({ minimum: 40 })
   @IsOptional()
   @IsNumber()
   @Min(40)
   readonly height?: number;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   readonly position_x?: number;
 
-  @ApiModelPropertyOptional()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   readonly position_y?: number;
